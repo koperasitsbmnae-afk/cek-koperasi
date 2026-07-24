@@ -1,4 +1,10 @@
-import warnings
+import subprocess
+import sys
+try:
+    import xlrd
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "xlrd"])
+    import xlrdimport warnings
 import pandas as pd
 import streamlit as st
 
