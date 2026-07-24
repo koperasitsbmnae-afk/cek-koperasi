@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import warnings
-import xlrd
 
 warnings.filterwarnings('ignore')
 
@@ -13,13 +12,11 @@ st.markdown("<h1 style='text-align: center; color: #1e3a8a;'>CEK DATA KOPERASI</
 st.markdown("<p style='text-align: center; color: #64748b;'>Silakan masukkan NIK Anda untuk melihat informasi data simpanan dan pinjaman.</p>", unsafe_allow_html=True)
 st.markdown("---")
 
-# Fungsi untuk memuat data Excel
+# Fungsi untuk memuat data Excel (.xlsx)
 @st.cache_data
 def load_data():
     try:
-        # Membaca file excel koperasi
-        df = pd.read_excel("KOPERASI JULI 26.xls")
-        # Membersihkan spasi pada nama kolom jika ada
+        df = pd.read_excel("KOPERASI JULI 26.xlsx")
         df.columns = df.columns.astype(str).str.strip()
         return df
     except Exception as e:
@@ -29,22 +26,17 @@ def load_data():
 df = load_data()
 
 if df is not None:
-    # Kolom input NIK
     nik_input = st.text_input("Masukan NIK KTP:", placeholder="Contoh: 3201234567890001")
 
     if st.button("Cek Data", type="primary"):
         if nik_input:
-            # Pastikan pencarian NIK cocok (dikonversi ke string untuk menghindari error tipe data)
             df['NIK'] = df['NIK'].astype(str).str.strip()
             hasil = df[df['NIK'] == str(nik_input).strip()]
 
             if not hasil.empty:
                 st.success("✅ Data ditemukan!")
-                
-                # Mengambil baris pertama dari hasil pencarian
                 row = hasil.iloc[0]
                 
-                # Menyiapkan variabel data (sesuaikan dengan nama kolom di Excel Anda jika perlu)
                 nama = row.get('NAMA', '-')
                 simpanan_pokok = row.get('SIMPANAN POKOK', 0)
                 simpanan_wajib = row.get('SIMPANAN WAJIB', 0)
@@ -55,7 +47,6 @@ if df is not None:
                 sisa_angsuran = row.get('SISA ANGSURAN', 0)
                 sisa_hutang = row.get('SISA HUTANG', 0)
 
-                # Format Tampilan Kartu Informasi
                 kartu_html = f"""
                 <div style='background-color: #f8fafc; padding: 20px; border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);'>
                     <h3 style='color: #1e3a8a; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px;'>Kartu Informasi Anggota</h3>
