@@ -55,7 +55,8 @@ if s1 is not None:
             on_click=reset_data,
         )
 
-    if nik_input and (cek_clicked or nik_input):
+    # Validasi: Hanya jalankan pengecekan jika tombol "Cek Data" diklik dan NIK tidak kosong
+    if cek_clicked and nik_input:
 
         def vlookup_exact(df, key, col_idx):
             if df is None or df.empty:
@@ -63,7 +64,8 @@ if s1 is not None:
             target_col = col_idx - 1
             for _, row in df.iterrows():
                 row_str = [str(val).strip() for val in row.values]
-                if any(key == item or key in item for item in row_str):
+                # Menggunakan pencocokan persis (exact match)
+                if any(key == item for item in row_str):
                     if target_col < len(row):
                         val = str(row.iloc[target_col]).strip()
                         if val and val.lower() != "nan" and val.lower() != "none":
@@ -77,7 +79,7 @@ if s1 is not None:
             nama = vlookup_exact(s4, nik_input, 2)
 
         if not nama:
-            st.error("❌ DATA TIDAK DITEMUKAN")
+            st.error("❌ DATA TIDAK DITEMUKAN / NIK SALAH")
         else:
             simpanan_pokok = (
                 vlookup_exact(s2, nik_input, 3)
