@@ -56,12 +56,12 @@ if df is not None:
                         return default
 
                     nama = get_val(['nama'], '-')
-                    simpanan_pokok = get_val(['simpanan pokok'], 0)
+                    simpanan_pokok = get_val(['total simpanan pokok', 'simpanan pokok'], 0)
                     simpanan_wajib = get_val(['simpanan wajib'], 0)
                     simpanan_sukarela = get_val(['simpanan sukarela'], 0)
-                    hutang = get_val(['hutang', 'pinjaman'], 0)
-                    tenor = get_val(['tenor'], 0)
-                    angsuran = get_val(['angsuran'], 0)
+                    hutang = get_val(['pinjaman pokok pembulatan', 'hutang', 'pinjaman'], 0)
+                    tenor = get_val(['tenor pinjaman', 'tenor'], 0)
+                    angsuran = get_val(['angsuran ke', 'angsuran'], 0)
                     sisa_angsuran = get_val(['sisa angsuran'], 0)
                     sisa_hutang = get_val(['sisa hutang', 'sisa pinjaman'], 0)
 
@@ -76,7 +76,7 @@ if df is not None:
                             <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SIMPANAN SUKARELA</td><td style='padding: 10px; color: #2d3748;'>{simpanan_sukarela}</td></tr>
                             <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>HUTANG</td><td style='padding: 10px; color: #2d3748;'>{hutang}</td></tr>
                             <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>TENOR PINJAMAN</td><td style='padding: 10px; color: #2d3748;'>{tenor} BULAN</td></tr>
-                            <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>ANGSURAN</td><td style='padding: 10px; color: #2d3748;'>{angsuran}</td></tr>
+                            <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>ANGSURAN KE</td><td style='padding: 10px; color: #2d3748;'>{angsuran}</td></tr>
                             <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SISA ANGSURAN</td><td style='padding: 10px; color: #2d3748;'>{sisa_angsuran}</td></tr>
                             <tr><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SISA HUTANG</td><td style='padding: 10px; font-weight: bold; color: #e53e3e; font-size: 16px;'>{sisa_hutang}</td></tr>
                         </table>
