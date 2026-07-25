@@ -150,7 +150,7 @@ if s1 is not None:
                     or "0"
                 )
                 hutang_raw = vlookup_exact(s4, nik_input, 10) or "0"
-                    sisa_hutang_raw = vlookup_exact(s4, nik_input, 3) or "0"
+                sisa_hutang_raw = vlookup_exact(s4, nik_input, 3) or "0"
 
                 simpanan_pokok = format_rupiah(simpanan_pokok_raw)
                 hutang = format_rupiah(hutang_raw)
