@@ -68,155 +68,107 @@ def clean_int(val):
 
 
 if s1 is not None:
-    # Menu utama dipindah ke halaman utama (di atas) agar mudah diakses
-    st.markdown("### 📌 Pilih Menu Aplikasi")
-    pilihan_menu = st.radio(
-        "Pilih Menu:", ["Cek Data Anggota", "Riwayat Akses Admin"], horizontal=True, label_visibility="collapsed"
+    # Menu admin disembunyikan total dari publik, hanya menyisakan menu cek data anggota
+    st.title("📋 CEK DATA ANGGOTA")
+    st.caption(
+        "🔒 Demi privasi, pastikan klik tombol 'Tutup / Bersihkan' setelah selesai."
     )
-    
-    st.markdown("---")
 
-    if pilihan_menu == "Cek Data Anggota":
-        st.title("📋 CEK DATA ANGGOTA")
-        st.caption(
-            "🔒 Demi privasi, pastikan klik tombol 'Tutup / Bersihkan' setelah selesai."
+    if "nik_query" not in st.session_state:
+        st.session_state["nik_query"] = ""
+
+    def reset_data():
+        st.session_state["nik_query"] = ""
+
+    nik_input = st.text_input(
+        "MASUKAN NIK KTP",
+        placeholder="Ketik 16 digit NIK KTP...",
+        key="nik_query",
+    ).strip()
+
+    col1, col2 = st.columns(2)
+    with col1:
+        cek_clicked = st.button("🔍 Cek Data", use_container_width=True)
+    with col2:
+        st.button(
+            "🔒 Tutup / Bersihkan",
+            use_container_width=True,
+            on_click=reset_data,
         )
 
-        if "nik_query" not in st.session_state:
-            st.session_state["nik_query"] = ""
-
-        def reset_data():
-            st.session_state["nik_query"] = ""
-
-        nik_input = st.text_input(
-            "MASUKAN NIK KTP",
-            placeholder="Ketik 16 digit NIK KTP...",
-            key="nik_query",
-        ).strip()
-
-        col1, col2 = st.columns(2)
-        with col1:
-            cek_clicked = st.button("🔍 Cek Data", use_container_width=True)
-        with col2:
-            st.button(
-                "🔒 Tutup / Bersihkan",
-                use_container_width=True,
-                on_click=reset_data,
-            )
-
-        if cek_clicked and nik_input:
-            if len(nik_input) != 16:
-                st.error("❌ NIK HARUS TEPAT 16 DIGIT!")
-            else:
-
-                def vlookup_exact(df, key, col_idx):
-                    if df is None or df.empty:
-                        return ""
-                    target_col = col_idx - 1
-                    for _, row in df.iterrows():
-                        row_str = [str(val).strip() for val in row.values]
-                        if any(key == item for item in row_str):
-                            if target_col < len(row):
-                                val = str(row.iloc[target_col]).strip()
-                                if (
-                                    val
-                                    and val.lower() != "nan"
-                                    and val.lower() != "none"
-                                ):
-                                    if val.endswith(".0"):
-                                        val = val[:-2]
-                                    return val
-                    return ""
-
-                nama = vlookup_exact(s1, nik_input, 2)
-                if not nama:
-                    nama = vlookup_exact(s4, nik_input, 2)
-
-                if not nama:
-                    st.error("❌ DATA TIDAK DITEMUKAN / NIK SALAH")
-                else:
-                    catat_log(nik_input, nama)
-
-                    simpanan_pokok_raw = (
-                        vlookup_exact(s2, nik_input, 3)
-                        or vlookup_exact(s2, nik_input, 2)
-                        or "0"
-                    )
-                    hutang_raw = vlookup_exact(s4, nik_input, 10) or "0"
-                    sisa_hutang_raw = vlookup_exact(s4, nik_input, 3) or "0"
-
-                    simpanan_pokok = format_rupiah(simpanan_pokok_raw)
-                    hutang = format_rupiah(hutang_raw)
-                    sisa_hutang = format_rupiah(sisa_hutang_raw)
-
-                    tenor = clean_int(vlookup_exact(s4, nik_input, 5))
-                    angsuran_ke = clean_int(vlookup_exact(s4, nik_input, 6))
-                    sisa_angsuran = clean_int(vlookup_exact(s4, nik_input, 7))
-
-                    st.markdown("---")
-
-                    kartu_html = (
-                        "<div style='background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: Arial, sans-serif; color: white;'>"
-                        "<div style='text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 12px;'>"
-                        "<h3 style='margin: 0; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; color: #ffffff;'>KARTU INFORMASI ANGGOTA</h3>"
-                        "<p style='margin: 5px 0 0 0; font-size: 12px; color: #a0aec0; letter-spacing: 1px;'>KTSB MNAE UPDATE JUNI 2026</p>"
-                        "</div>"
-                        "<div style='background-color: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 10px; color: #333;'>"
-                        "<table style='width:100%; border-collapse: collapse; font-size: 15px;'>"
-                        f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; width: 40%; color: #4a5568;'>NIK</td><td style='padding: 10px; background-color: #fff3cd; font-weight: bold; color: #856404; border-radius: 4px;'>{nik_input}</td></tr>"
-                        f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>NAMA</td><td style='padding: 10px; font-weight: bold; color: #2b6cb0;'>{nama}</td></tr>"
-                        f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SIMPANAN POKOK</td><td style='padding: 10px; color: #2d3748;'>{simpanan_pokok}</td></tr>"
-                        f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>HUTANG</td><td style='padding: 10px; color: #2d3748;'>{hutang}</td></tr>"
-                        f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>TENOR PINJAMAN</td><td style='padding: 10px; color: #2d3748;'>{tenor} BULAN</td></tr>"
-                        f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>ANGSURAN KE</td><td style='padding: 10px; color: #2d3748;'>{angsuran_ke}</td></tr>"
-                        f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SISA ANGSURAN</td><td style='padding: 10px; color: #2d3748;'>{sisa_angsuran}</td></tr>"
-                        f"<tr><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SISA HUTANG</td><td style='padding: 10px; font-weight: bold; color: #e53e3e; font-size: 16px;'>{sisa_hutang}</td></tr>"
-                        "</table></div></div>"
-                    )
-
-                    st.markdown(kartu_html, unsafe_allow_html=True)
-
+    if cek_clicked and nik_input:
+        if len(nik_input) != 16:
+            st.error("❌ NIK HARUS TEPAT 16 DIGIT!")
         else:
-            st.info(
-                "💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' untuk melihat informasi."
-            )
 
-    elif pilihan_menu == "Riwayat Akses Admin":
-        st.title("🔐 MENU ADMIN: RIWAYAT AKSES")
-        password = st.text_input(
-            "Masukkan Password Admin:", type="password", key="password_admin_input"
-        )
+            def vlookup_exact(df, key, col_idx):
+                if df is None or df.empty:
+                    return ""
+                target_col = col_idx - 1
+                for _, row in df.iterrows():
+                    row_str = [str(val).strip() for val in row.values]
+                    if any(key == item for item in row_str):
+                        if target_col < len(row):
+                            val = str(row.iloc[target_col]).strip()
+                            if (
+                                val
+                                and val.lower() != "nan"
+                                and val.lower() != "none"
+                            ):
+                                if val.endswith(".0"):
+                                    val = val[:-2]
+                                return val
+                return ""
 
-        if password == "Tactical":
-            st.success("✅ Password benar!")
-            if os.path.exists(FILE_LOG):
-                df_log = pd.read_csv(FILE_LOG)
-                
-                # Konversi waktu agar bisa difilter per tanggal
-                df_log["Waktu"] = pd.to_datetime(df_log["Waktu"])
-                df_log["Tanggal"] = df_log["Waktu"].dt.date
+            nama = vlookup_exact(s1, nik_input, 2)
+            if not nama:
+                nama = vlookup_exact(s4, nik_input, 2)
 
-                mode_filter = st.radio(
-                    "Tampilkan Data Berdasarkan:",
-                    ["Semua Riwayat (Sejak Awal)", "Filter Berdasarkan Tanggal Tertentu"],
-                    horizontal=True
+            if not nama:
+                st.error("❌ DATA TIDAK DITEMUKAN / NIK SALAH")
+            else:
+                catat_log(nik_input, nama)
+
+                simpanan_pokok_raw = (
+                    vlookup_exact(s2, nik_input, 3)
+                    or vlookup_exact(s2, nik_input, 2)
+                    or "0"
+                )
+                hutang_raw = vlookup_exact(s4, nik_input, 10) or "0"
+                sisa_hutang_raw = vlookup_exact(s4, nik_input, 3) or "0"
+
+                simpanan_pokok = format_rupiah(simpanan_pokok_raw)
+                hutang = format_rupiah(hutang_raw)
+                sisa_hutang = format_rupiah(sisa_hutang_raw)
+
+                tenor = clean_int(vlookup_exact(s4, nik_input, 5))
+                angsuran_ke = clean_int(vlookup_exact(s4, nik_input, 6))
+                sisa_angsuran = clean_int(vlookup_exact(s4, nik_input, 7))
+
+                st.markdown("---")
+
+                kartu_html = (
+                    "<div style='background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: Arial, sans-serif; color: white;'>"
+                    "<div style='text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 12px;'>"
+                    "<h3 style='margin: 0; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; color: #ffffff;'>KARTU INFORMASI ANGGOTA</h3>"
+                    "<p style='margin: 5px 0 0 0; font-size: 12px; color: #a0aec0; letter-spacing: 1px;'>KTSB MNAE UPDATE JUNI 2026</p>"
+                    "</div>"
+                    "<div style='background-color: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 10px; color: #333;'>"
+                    "<table style='width:100%; border-collapse: collapse; font-size: 15px;'>"
+                    f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; width: 40%; color: #4a5568;'>NIK</td><td style='padding: 10px; background-color: #fff3cd; font-weight: bold; color: #856404; border-radius: 4px;'>{nik_input}</td></tr>"
+                    f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>NAMA</td><td style='padding: 10px; font-weight: bold; color: #2b6cb0;'>{nama}</td></tr>"
+                    f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SIMPANAN POKOK</td><td style='padding: 10px; color: #2d3748;'>{simpanan_pokok}</td></tr>"
+                    f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>HUTANG</td><td style='padding: 10px; color: #2d3748;'>{hutang}</td></tr>"
+                    f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>TENOR PINJAMAN</td><td style='padding: 10px; color: #2d3748;'>{tenor} BULAN</td></tr>"
+                    f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>ANGSURAN KE</td><td style='padding: 10px; color: #2d3748;'>{angsuran_ke}</td></tr>"
+                    f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SISA ANGSURAN</td><td style='padding: 10px; color: #2d3748;'>{sisa_angsuran}</td></tr>"
+                    f"<tr><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SISA HUTANG</td><td style='padding: 10px; font-weight: bold; color: #e53e3e; font-size: 16px;'>{sisa_hutang}</td></tr>"
+                    "</table></div></div>"
                 )
 
-                if mode_filter == "Filter Berdasarkan Tanggal Tertentu":
-                    daftar_tanggal = sorted(df_log["Tanggal"].unique(), reverse=True)
-                    if daftar_tanggal:
-                        pilih_tgl = st.selectbox("Pilih Tanggal:", daftar_tanggal)
-                        df_tampil = df_log[df_log["Tanggal"] == pilih_tgl]
-                        st.write(f"Total pengecekan pada tanggal {pilih_tgl}: {len(df_tampil)} kali akses.")
-                        st.dataframe(df_tampil.drop(columns=["Tanggal"]), use_container_width=True)
-                    else:
-                        st.info("Belum ada data tanggal.")
-                else:
-                    st.write(f"Total keseluruhan riwayat pengecekan: {len(df_log)} kali akses.")
-                    st.dataframe(df_log.drop(columns=["Tanggal"]), use_container_width=True)
-            else:
-                st.info("Belum ada riwayat akses yang tercatat.")
-        elif password != "":
-            st.error("❌ Password salah!")
-        else:
-            st.warning("Silakan masukkan password admin untuk melihat data.")
+                st.markdown(kartu_html, unsafe_allow_html=True)
+
+    else:
+      st.info(
+          "💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' untuk melihat informasi."
+      )
