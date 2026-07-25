@@ -1,5 +1,11 @@
 [theme]
 base="light"
 
-[menu]
-hideToolbar = true
+[client]
+showErrorDetails = false
+
+[server]
+headless = true
+
+[ui]
+hideTopBar = true
