@@ -58,6 +58,15 @@ def format_rupiah(nilai):
         return nilai
 
 
+# Fungsi untuk membersihkan nilai numerik (Tenor, Angsuran, dll) agar bulat rapi
+def clean_int(val):
+    try:
+        clean_val = str(val).split(".")[0]
+        return str(int(clean_val)) if clean_val and clean_val.lower() != "nan" else "0"
+    except:
+        return "0"
+
+
 if s1 is not None:
     # Sidebar untuk Pilihan Menu (Menu Utama vs Menu Admin)
     st.sidebar.title("📌 Navigasi")
@@ -143,9 +152,10 @@ if s1 is not None:
                     hutang = format_rupiah(hutang_raw)
                     sisa_hutang = format_rupiah(sisa_hutang_raw)
 
-                    tenor = vlookup_exact(s4, nik_input, 5) or "0"
-                    angsuran_ke = vlookup_exact(s4, nik_input, 6) or "0"
-                    sisa_angsuran = vlookup_exact(s4, nik_input, 7) or "0"
+                    # Menggunakan clean_int agar tidak ada desimal panjang
+                    tenor = clean_int(vlookup_exact(s4, nik_input, 5))
+                    angsuran_ke = clean_int(vlookup_exact(s4, nik_input, 6))
+                    sisa_angsuran = clean_int(vlookup_exact(s4, nik_input, 7))
 
                     st.markdown("---")
 
