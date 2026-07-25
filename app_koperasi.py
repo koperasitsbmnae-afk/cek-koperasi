@@ -8,27 +8,41 @@ warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="CEK DATA KOPERASI", layout="centered")
 
-# CSS untuk latar belakang bertema keuangan (perbankan/koperasi)
+# CSS untuk latar belakang bertema keuangan dan menjaga warna tombol agar tidak putih polos
 hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Background gradasi bertema finansial / koperasi (Nuansa Biru Korporat & Hijau Stabil) */
+    /* Background gradasi bertema finansial / koperasi */
     .stApp {
         background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
         background-attachment: fixed;
     }
     
-    /* Menyesuaikan warna teks judul agar kontras dan tetap jelas dibaca di background gelap */
+    /* Warna teks judul dan label */
     h1, h2, h3, p, label {
         color: #ffffff !important;
     }
     
-    /* Mempercantik kotak instruksi / caption */
+    /* Warna teks caption */
     .stCaption {
         color: #d2d6dc !important;
+    }
+
+    /* Mengatur tombol agar tidak berubah jadi putih */
+    .stButton>button {
+        background-color: #f8f9fa !important;
+        color: #212529 !important;
+        border: 1px solid #ced4da !important;
+        font-weight: bold !important;
+    }
+    
+    .stButton>button:hover {
+        background-color: #e2e8f0 !important;
+        color: #1a202c !important;
+        border-color: #cbd5e0 !important;
     }
     </style>
 """
