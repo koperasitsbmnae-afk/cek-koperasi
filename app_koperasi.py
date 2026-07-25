@@ -58,7 +58,7 @@ def format_rupiah(nilai):
         return nilai
 
 
-# Fungsi untuk membersihkan nilai numerik (Tenor, Angsuran, dll) agar bulat rapi
+# Fungsi untuk membersihkan nilai numerik agar bulat rapi
 def clean_int(val):
     try:
         clean_val = str(val).split(".")[0]
@@ -68,26 +68,25 @@ def clean_int(val):
 
 
 if s1 is not None:
-    # Sidebar untuk Pilihan Menu (Menu Utama vs Menu Admin)
-    st.sidebar.title("📌 Navigasi")
-    pilihan_menu = st.sidebar.radio(
-        "Pilih Menu:", ["Cek Data Anggota", "Riwayat Akses Admin"]
+    # Menu utama dipindah ke halaman utama (di atas) agar mudah diakses
+    st.markdown("### 📌 Pilih Menu Aplikasi")
+    pilihan_menu = st.radio(
+        "Pilih Menu:", ["Cek Data Anggota", "Riwayat Akses Admin"], horizontal=True, label_visibility="collapsed"
     )
+    
+    st.markdown("---")
 
     if pilihan_menu == "Cek Data Anggota":
         st.title("📋 CEK DATA ANGGOTA")
         st.caption(
-            "🔒 Demi privasi, pastikan klik tombol 'Tutup / Bersihkan' setelah"
-            " selesai."
+            "🔒 Demi privasi, pastikan klik tombol 'Tutup / Bersihkan' setelah selesai."
         )
 
         if "nik_query" not in st.session_state:
             st.session_state["nik_query"] = ""
 
-
         def reset_data():
             st.session_state["nik_query"] = ""
-
 
         nik_input = st.text_input(
             "MASUKAN NIK KTP",
@@ -129,7 +128,6 @@ if s1 is not None:
                                     return val
                     return ""
 
-
                 nama = vlookup_exact(s1, nik_input, 2)
                 if not nama:
                     nama = vlookup_exact(s4, nik_input, 2)
@@ -137,7 +135,6 @@ if s1 is not None:
                 if not nama:
                     st.error("❌ DATA TIDAK DITEMUKAN / NIK SALAH")
                 else:
-                    # Catat otomatis ke log riwayat
                     catat_log(nik_input, nama)
 
                     simpanan_pokok_raw = (
@@ -152,7 +149,6 @@ if s1 is not None:
                     hutang = format_rupiah(hutang_raw)
                     sisa_hutang = format_rupiah(sisa_hutang_raw)
 
-                    # Menggunakan clean_int agar tidak ada desimal panjang
                     tenor = clean_int(vlookup_exact(s4, nik_input, 5))
                     angsuran_ke = clean_int(vlookup_exact(s4, nik_input, 6))
                     sisa_angsuran = clean_int(vlookup_exact(s4, nik_input, 7))
@@ -160,68 +156,35 @@ if s1 is not None:
                     st.markdown("---")
 
                     kartu_html = (
-                        "<div style='background: linear-gradient(135deg,"
-                        " #0f2027 0%, #203a43 50%, #2c5364 100%); padding:"
-                        " 30px; border-radius: 16px; box-shadow: 0 10px 25px"
-                        " rgba(0,0,0,0.2); font-family: Arial, sans-serif;"
-                        " color: white;'><div style='text-align: center;"
-                        " margin-bottom: 20px; border-bottom: 1px solid"
-                        " rgba(255,255,255,0.2); padding-bottom: 12px;'><h3"
-                        " style='margin: 0; font-size: 20px; letter-spacing:"
-                        " 2px; text-transform: uppercase; color:"
-                        " #ffffff;'>KARTU INFORMASI ANGGOTA</h3><p"
-                        " style='margin: 5px 0 0 0; font-size: 12px; color:"
-                        " #a0aec0; letter-spacing: 1px;'>KTSB MNAE UPDATE JUNI"
-                        " 2026</p></div><div style='background-color: rgba(255,"
-                        " 255, 255, 0.95); padding: 20px; border-radius: 10px;"
-                        " color: #333;'><table style='width:100%; border-collapse:"
-                        f" collapse; font-size: 15px;'><tr style='border-bottom:"
-                        " 1px solid #edf2f7;'><td style='padding: 10px;"
-                        f" font-weight: bold; width: 40%; color:"
-                        f" #4a5568;'>NIK</td><td style='padding: 10px;"
-                        " background-color: #fff3cd; font-weight: bold; color:"
-                        f" #856404; border-radius: 4px;'>{nik_input}</td></tr><tr"
-                        " style='border-bottom: 1px solid #edf2f7;'><td"
-                        " style='padding: 10px; font-weight: bold; color:"
-                        f" #4a5568;'>NAMA</td><td style='padding: 10px;"
-                        f" font-weight: bold; color: #2b6cb0;'>{nama}</td></tr><tr"
-                        " style='border-bottom: 1px solid #edf2f7;'><td"
-                        " style='padding: 10px; font-weight: bold; color:"
-                        f" #4a5568;'>SIMPANAN POKOK</td><td style='padding: 10px;"
-                        f" color: #2d3748;'>{simpanan_pokok}</td></tr><tr"
-                        " style='border-bottom: 1px solid #edf2f7;'><td"
-                        " style='padding: 10px; font-weight: bold; color:"
-                        f" #4a5568;'>HUTANG</td><td style='padding: 10px; color:"
-                        f" #2d3748;'>{hutang}</td></tr><tr style='border-bottom:"
-                        " 1px solid #edf2f7;'><td style='padding: 10px;"
-                        f" font-weight: bold; color: #4a5568;'>TENOR PINJAMAN</td><td"
-                        f" style='padding: 10px; color: #2d3748;'>{tenor}"
-                        " BULAN</td></tr><tr style='border-bottom: 1px solid"
-                        " #edf2f7;'><td style='padding: 10px; font-weight: bold;"
-                        f" color: #4a5568;'>ANGSURAN KE</td><td style='padding:"
-                        f" 10px; color: #2d3748;'>{angsuran_ke}</td></tr><tr"
-                        " style='border-bottom: 1px solid #edf2f7;'><td"
-                        " style='padding: 10px; font-weight: bold; color:"
-                        f" #4a5568;'>SISA ANGSURAN</td><td style='padding: 10px;"
-                        f" color: #2d3748;'>{sisa_angsuran}</td></tr><tr><td"
-                        " style='padding: 10px; font-weight: bold; color:"
-                        " #4a5568;'>SISA HUTANG</td><td style='padding: 10px;"
-                        " font-weight: bold; color: #e53e3e; font-size:"
-                        f" 16px;'>{sisa_hutang}</td></tr></table></div></div>"
+                        "<div style='background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: Arial, sans-serif; color: white;'>"
+                        "<div style='text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 12px;'>"
+                        "<h3 style='margin: 0; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; color: #ffffff;'>KARTU INFORMASI ANGGOTA</h3>"
+                        "<p style='margin: 5px 0 0 0; font-size: 12px; color: #a0aec0; letter-spacing: 1px;'>KTSB MNAE UPDATE JUNI 2026</p>"
+                        "</div>"
+                        "<div style='background-color: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 10px; color: #333;'>"
+                        "<table style='width:100%; border-collapse: collapse; font-size: 15px;'>"
+                        f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; width: 40%; color: #4a5568;'>NIK</td><td style='padding: 10px; background-color: #fff3cd; font-weight: bold; color: #856404; border-radius: 4px;'>{nik_input}</td></tr>"
+                        f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>NAMA</td><td style='padding: 10px; font-weight: bold; color: #2b6cb0;'>{nama}</td></tr>"
+                        f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SIMPANAN POKOK</td><td style='padding: 10px; color: #2d3748;'>{simpanan_pokok}</td></tr>"
+                        f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>HUTANG</td><td style='padding: 10px; color: #2d3748;'>{hutang}</td></tr>"
+                        f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>TENOR PINJAMAN</td><td style='padding: 10px; color: #2d3748;'>{tenor} BULAN</td></tr>"
+                        f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>ANGSURAN KE</td><td style='padding: 10px; color: #2d3748;'>{angsuran_ke}</td></tr>"
+                        f"<tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SISA ANGSURAN</td><td style='padding: 10px; color: #2d3748;'>{sisa_angsuran}</td></tr>"
+                        f"<tr><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SISA HUTANG</td><td style='padding: 10px; font-weight: bold; color: #e53e3e; font-size: 16px;'>{sisa_hutang}</td></tr>"
+                        "</table></div></div>"
                     )
 
                     st.markdown(kartu_html, unsafe_allow_html=True)
 
         else:
             st.info(
-                "💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' untuk melihat"
-                " informasi."
+                "💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' untuk melihat informasi."
             )
 
     elif pilihan_menu == "Riwayat Akses Admin":
         st.title("🔐 MENU ADMIN: RIWAYAT AKSES")
         password = st.text_input(
-            "Masukkan Password Admin:", type="password"
+            "Masukkan Password Admin:", type="password", key="password_admin_input"
         )
 
         if password == "Tactical":
