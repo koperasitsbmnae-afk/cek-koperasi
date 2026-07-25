@@ -8,7 +8,7 @@ warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="CEK DATA KOPERASI", layout="centered")
 
-# CSS untuk latar belakang bertema keuangan dan menjaga warna tombol agar tidak putih polos
+# CSS untuk latar belakang bertema keuangan dan memperbaiki warna teks tombol agar jelas terbaca
 hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -31,18 +31,23 @@ hide_streamlit_style = """
         color: #d2d6dc !important;
     }
 
-    /* Mengatur tombol agar tidak berubah jadi putih */
+    /* Mengatur tombol agar background putih bersih dan teksnya hitam pekat (tidak samar) */
     .stButton>button {
-        background-color: #f8f9fa !important;
-        color: #212529 !important;
-        border: 1px solid #ced4da !important;
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #cbd5e0 !important;
         font-weight: bold !important;
     }
     
     .stButton>button:hover {
-        background-color: #e2e8f0 !important;
-        color: #1a202c !important;
-        border-color: #cbd5e0 !important;
+        background-color: #edf2f7 !important;
+        color: #000000 !important;
+        border-color: #a0aec0 !important;
+    }
+    
+    /* Memastikan teks di dalam tombol secara spesifik berwarna hitam */
+    .stButton>button p {
+        color: #000000 !important;
     }
     </style>
 """
