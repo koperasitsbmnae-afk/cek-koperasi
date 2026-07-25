@@ -224,8 +224,8 @@ if s1 is not None:
             "Masukkan Password Admin:", type="password"
         )
 
-        # Ganti "admin123" jika ingin mengubah password admin
-        if password == "admin123":
+        # Password admin diubah menjadi "Tactical"
+        if password == "Tactical":
             st.success("✅ Password benar!")
             if os.path.exists(FILE_LOG):
                 df_log = pd.read_csv(FILE_LOG)
