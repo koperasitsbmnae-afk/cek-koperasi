@@ -24,6 +24,17 @@ def load_sheets_raw():
 
 s1, s2, s4 = load_sheets_raw()
 
+# Fungsi untuk memformat angka menjadi Rupiah (contoh: 7737000 -> Rp 7.737.000)
+def format_rupiah(nilai):
+    try:
+        # Bersihkan string jika ada karakter lain atau koma desimal
+        clean_val = str(nilai).replace(",", "").split(".")[0]
+        angka = int(clean_val)
+        return f"Rp {angka:,}".replace(",", ".")
+    except:
+        return nilai  # Jika gagal dikonversi, kembalikan nilai aslinya
+
+
 if s1 is not None:
     st.title("📋 CEK DATA ANGGOTA")
     st.caption(
@@ -85,16 +96,22 @@ if s1 is not None:
             if not nama:
                 st.error("❌ DATA TIDAK DITEMUKAN / NIK SALAH")
             else:
-                simpanan_pokok = (
+                simpanan_pokok_raw = (
                     vlookup_exact(s2, nik_input, 3)
                     or vlookup_exact(s2, nik_input, 2)
                     or "0"
                 )
-                hutang = vlookup_exact(s4, nik_input, 10) or "0"
+                hutang_raw = vlookup_exact(s4, nik_input, 10) or "0"
+                sisa_hutang_raw = vlookup_exact(s4, nik_input, 3) or "0"
+
+                # Menerapkan format Rupiah
+                simpanan_pokok = format_rupiah(simpanan_pokok_raw)
+                hutang = format_rupiah(hutang_raw)
+                sisa_hutang = format_rupiah(sisa_hutang_raw)
+
                 tenor = vlookup_exact(s4, nik_input, 5) or "0"
                 angsuran_ke = vlookup_exact(s4, nik_input, 6) or "0"
                 sisa_angsuran = vlookup_exact(s4, nik_input, 7) or "0"
-                sisa_hutang = vlookup_exact(s4, nik_input, 3) or "0"
 
                 st.markdown("---")
 
