@@ -8,12 +8,28 @@ warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="CEK DATA KOPERASI", layout="centered")
 
-# Sembunyikan header, menu, dan footer bawaan Streamlit
+# CSS untuk latar belakang bertema keuangan (perbankan/koperasi)
 hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
+    
+    /* Background gradasi bertema finansial / koperasi (Nuansa Biru Korporat & Hijau Stabil) */
+    .stApp {
+        background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        background-attachment: fixed;
+    }
+    
+    /* Menyesuaikan warna teks judul agar kontras dan tetap jelas dibaca di background gelap */
+    h1, h2, h3, p, label {
+        color: #ffffff !important;
+    }
+    
+    /* Mempercantik kotak instruksi / caption */
+    .stCaption {
+        color: #d2d6dc !important;
+    }
     </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
@@ -68,7 +84,6 @@ def clean_int(val):
 
 
 if s1 is not None:
-    # Menu admin disembunyikan total dari publik, hanya menyisakan menu cek data anggota
     st.title("📋 CEK DATA ANGGOTA")
     st.caption(
         "🔒 Demi privasi, pastikan klik tombol 'Tutup / Bersihkan' setelah selesai."
@@ -135,7 +150,7 @@ if s1 is not None:
                     or "0"
                 )
                 hutang_raw = vlookup_exact(s4, nik_input, 10) or "0"
-                sisa_hutang_raw = vlookup_exact(s4, nik_input, 3) or "0"
+                    sisa_hutang_raw = vlookup_exact(s4, nik_input, 3) or "0"
 
                 simpanan_pokok = format_rupiah(simpanan_pokok_raw)
                 hutang = format_rupiah(hutang_raw)
@@ -148,10 +163,10 @@ if s1 is not None:
                 st.markdown("---")
 
                 kartu_html = (
-                    "<div style='background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: Arial, sans-serif; color: white;'>"
-                    "<div style='text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 12px;'>"
+                    "<div style='background: linear-gradient(135deg, #134e5e 0%, #71b280 100%); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); font-family: Arial, sans-serif; color: white;'>"
+                    "<div style='text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 12px;'>"
                     "<h3 style='margin: 0; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; color: #ffffff;'>KARTU INFORMASI ANGGOTA</h3>"
-                    "<p style='margin: 5px 0 0 0; font-size: 12px; color: #a0aec0; letter-spacing: 1px;'>KTSB MNAE UPDATE JUNI 2026</p>"
+                    "<p style='margin: 5px 0 0 0; font-size: 12px; color: #e2e8f0; letter-spacing: 1px;'>KTSB MNAE UPDATE JUNI 2026</p>"
                     "</div>"
                     "<div style='background-color: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 10px; color: #333;'>"
                     "<table style='width:100%; border-collapse: collapse; font-size: 15px;'>"
@@ -169,6 +184,6 @@ if s1 is not None:
                 st.markdown(kartu_html, unsafe_allow_html=True)
 
     else:
-      st.info(
-          "💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' untuk melihat informasi."
-      )
+        st.info(
+            "💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' untuk melihat informasi."
+        )
