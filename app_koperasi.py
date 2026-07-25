@@ -191,10 +191,29 @@ if s1 is not None:
             st.success("✅ Password benar!")
             if os.path.exists(FILE_LOG):
                 df_log = pd.read_csv(FILE_LOG)
-                st.write(
-                    f"Total riwayat pengecekan: {len(df_log)} kali akses."
+                
+                # Konversi waktu agar bisa difilter per tanggal
+                df_log["Waktu"] = pd.to_datetime(df_log["Waktu"])
+                df_log["Tanggal"] = df_log["Waktu"].dt.date
+
+                mode_filter = st.radio(
+                    "Tampilkan Data Berdasarkan:",
+                    ["Semua Riwayat (Sejak Awal)", "Filter Berdasarkan Tanggal Tertentu"],
+                    horizontal=True
                 )
-                st.dataframe(df_log, use_container_width=True)
+
+                if mode_filter == "Filter Berdasarkan Tanggal Tertentu":
+                    daftar_tanggal = sorted(df_log["Tanggal"].unique(), reverse=True)
+                    if daftar_tanggal:
+                        pilih_tgl = st.selectbox("Pilih Tanggal:", daftar_tanggal)
+                        df_tampil = df_log[df_log["Tanggal"] == pilih_tgl]
+                        st.write(f"Total pengecekan pada tanggal {pilih_tgl}: {len(df_tampil)} kali akses.")
+                        st.dataframe(df_tampil.drop(columns=["Tanggal"]), use_container_width=True)
+                    else:
+                        st.info("Belum ada data tanggal.")
+                else:
+                    st.write(f"Total keseluruhan riwayat pengecekan: {len(df_log)} kali akses.")
+                    st.dataframe(df_log.drop(columns=["Tanggal"]), use_container_width=True)
             else:
                 st.info("Belum ada riwayat akses yang tercatat.")
         elif password != "":
