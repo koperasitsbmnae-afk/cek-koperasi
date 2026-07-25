@@ -224,7 +224,6 @@ if s1 is not None:
             "Masukkan Password Admin:", type="password"
         )
 
-        # Password admin diubah menjadi "Tactical"
         if password == "Tactical":
             st.success("✅ Password benar!")
             if os.path.exists(FILE_LOG):
