@@ -6,6 +6,16 @@ warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="CEK DATA KOPERASI", layout="centered")
 
+# Sembunyikan header, menu, dan footer bawaan Streamlit
+hide_streamlit_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 FILE_EXCEL = "KOPERASI JULI 26.xlsx"
 
 
@@ -24,15 +34,15 @@ def load_sheets_raw():
 
 s1, s2, s4 = load_sheets_raw()
 
+
 # Fungsi untuk memformat angka menjadi Rupiah (contoh: 7737000 -> Rp 7.737.000)
 def format_rupiah(nilai):
     try:
-        # Bersihkan string jika ada karakter lain atau koma desimal
         clean_val = str(nilai).replace(",", "").split(".")[0]
         angka = int(clean_val)
         return f"Rp {angka:,}".replace(",", ".")
     except:
-        return nilai  # Jika gagal dikonversi, kembalikan nilai aslinya
+        return nilai
 
 
 if s1 is not None:
@@ -45,8 +55,10 @@ if s1 is not None:
     if "nik_query" not in st.session_state:
         st.session_state["nik_query"] = ""
 
+
     def reset_data():
         st.session_state["nik_query"] = ""
+
 
     nik_input = st.text_input(
         "MASUKAN NIK KTP",
@@ -88,6 +100,7 @@ if s1 is not None:
                                     val = val[:-2]
                                 return val
                 return ""
+
 
             nama = vlookup_exact(s1, nik_input, 2)
             if not nama:
