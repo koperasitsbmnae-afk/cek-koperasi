@@ -6,14 +6,20 @@ import streamlit as st
 
 warnings.filterwarnings('ignore')
 
-st.set_page_config(page_title="CEK DATA KOPERASI", layout="centered")
+st.set_page_config(page_title="CEK DATA PINJAMAN", layout="centered")
 
-# CSS untuk latar belakang bertema keuangan dan memperbaiki warna teks tombol agar jelas terbaca
+# CSS untuk latar belakang bertema keuangan, memperbaiki warna teks tombol,
+# serta menyembunyikan badge/tombol deploy bawaan Streamlit
 hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
+    
+    /* Menyembunyikan badge/tombol deploy bawaan Streamlit */
+    .stAppDeployButton, [data-testid="stStatusWidget"] {
+        display: none !important;
+    }
     
     /* Background gradasi bertema finansial / koperasi */
     .stApp {
@@ -103,7 +109,7 @@ def clean_int(val):
 
 
 if s1 is not None:
-    st.title("📋 CEK DATA ANGGOTA")
+    st.title("📋 CEK DATA PINJAMAN KTSB MNAE")
     st.caption(
         "🔒 Demi privasi, pastikan klik tombol 'Tutup / Bersihkan' setelah selesai."
     )
