@@ -8,17 +8,23 @@ warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="CEK DATA PINJAMAN", layout="centered")
 
-# CSS untuk latar belakang bertema keuangan, memperbaiki warna teks tombol,
-# serta menyembunyikan badge/tombol deploy bawaan Streamlit
+# CSS untuk memperkecil/merampingkan logo di pojok kanan bawah agar tidak mengganggu estetika
 hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Menyembunyikan badge/tombol deploy bawaan Streamlit */
-    .stAppDeployButton, [data-testid="stStatusWidget"] {
-        display: none !important;
+    /* Memperkecil dan merampingkan widget status / badge di pojok kanan bawah */
+    [data-testid="stStatusWidget"], .stAppDeployButton {
+        transform: scale(0.75) !important;
+        transform-origin: bottom right !important;
+        opacity: 0.7 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    [data-testid="stStatusWidget"]:hover, .stAppDeployButton:hover {
+        opacity: 1 !important;
     }
     
     /* Background gradasi bertema finansial / koperasi */
