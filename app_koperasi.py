@@ -2,6 +2,7 @@ from datetime import datetime
 import os
 import warnings
 import base64
+import glob
 import pandas as pd
 import streamlit as st
 
@@ -63,34 +64,18 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 FILE_EXCEL = "KOPERASI JULI 26.xlsx"
 FILE_LOG = "log_akses_nik.csv"
 
-# Otomatis cari file logo dari berbagai kemungkinan nama file
+# Pencarian logo fleksibel (otomatis deteksi semua ekstensi gambar)
 FILE_LOGO = None
-kemungkinan_nama_logo = [
-    "logo_koperasi.png",
-    "Logo_koperasi.png",
-    "logo_koperasi.PNG",
-    "LOGO_KOPERASI.png",
-    "1785240565423.png"
-]
-
-for nama_file in kemungkinan_nama_logo:
-    if os.path.exists(nama_file):
-        FILE_LOGO = nama_file
-        break
-
-# Jika belum ketemu juga, cari file .png berakhiran logo atau angka pertama di folder
-if not FILE_LOGO:
-    for file in os.listdir("."):
-        if file.lower().endswith((".png", ".jpg", ".jpeg")) and file != "favicon.ico":
-            FILE_LOGO = file
-            break
+gambar_files = glob.glob("*.png") + glob.glob("*.PNG") + glob.glob("*.jpg") + glob.glob("*.jpeg")
+if gambar_files:
+    FILE_LOGO = gambar_files[0]
 
 
 def get_image_base64(path):
     if path and os.path.exists(path):
         with open(path, "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read()).decode()
-            ext = path.split(".")[-1]
+            ext = path.split(".")[-1].lower()
             return f"data:image/{ext};base64,{encoded_string}"
     return None
 
@@ -157,11 +142,18 @@ def vlookup_exact(df, key, col_idx):
 
 
 if s1 is not None:
-    # ------------------- POSISI LOGO DI ATAS JUDUL -------------------
+    # --- POSISI LOGO DENGAN HTML SUPAYA PASTI RENDER DI TENAH ---
     if FILE_LOGO and os.path.exists(FILE_LOGO):
-        col_left, col_center, col_right = st.columns([1, 1.2, 1])
-        with col_center:
-            st.image(FILE_LOGO, use_container_width=True)
+        logo_b64 = get_image_base64(FILE_LOGO)
+        if logo_b64:
+            st.markdown(
+                f"""
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <img src="{logo_b64}" style="max-width: 140px; height: auto;">
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
     
     # Judul dan Deskripsi
     st.markdown("<h1 style='text-align: center; margin-top: -10px;'>📋 CEK DATA PINJAMAN KTSB MNAE</h1>", unsafe_allow_html=True)
