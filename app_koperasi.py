@@ -1,8 +1,6 @@
 from datetime import datetime
 import os
 import warnings
-import base64
-import glob
 import pandas as pd
 import streamlit as st
 
@@ -64,20 +62,19 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 FILE_EXCEL = "KOPERASI JULI 26.xlsx"
 FILE_LOG = "log_akses_nik.csv"
 
-# Pencarian logo fleksibel (otomatis deteksi semua ekstensi gambar)
+# Pencarian lokasi logo
+POSSIBLE_LOGOS = [
+    "logo_koperasi.png",
+    "logo_koperasi.PNG",
+    "Logo_koperasi.png",
+    r"C:\Users\TECNO\logo_koperasi.png"
+]
+
 FILE_LOGO = None
-gambar_files = glob.glob("*.png") + glob.glob("*.PNG") + glob.glob("*.jpg") + glob.glob("*.jpeg")
-if gambar_files:
-    FILE_LOGO = gambar_files[0]
-
-
-def get_image_base64(path):
-    if path and os.path.exists(path):
-        with open(path, "rb") as image_file:
-            encoded_string = base64.b64encode(image_file.read()).decode()
-            ext = path.split(".")[-1].lower()
-            return f"data:image/{ext};base64,{encoded_string}"
-    return None
+for logo_path in POSSIBLE_LOGOS:
+    if os.path.exists(logo_path):
+        FILE_LOGO = logo_path
+        break
 
 
 @st.cache_data
@@ -142,20 +139,13 @@ def vlookup_exact(df, key, col_idx):
 
 
 if s1 is not None:
-    # --- POSISI LOGO DENGAN HTML SUPAYA PASTI RENDER DI TENAH ---
-    if FILE_LOGO and os.path.exists(FILE_LOGO):
-        logo_b64 = get_image_base64(FILE_LOGO)
-        if logo_b64:
-            st.markdown(
-                f"""
-                <div style="text-align: center; margin-bottom: 15px;">
-                    <img src="{logo_b64}" style="max-width: 140px; height: auto;">
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-    
-    # Judul dan Deskripsi
+    # --- MENAMPILKAN LOGO DI ATAS JUDUL ---
+    if FILE_LOGO:
+        col_l1, col_l2, col_l3 = st.columns([1, 1, 1])
+        with col_l2:
+            st.image(FILE_LOGO, width=140)
+
+    # Judul dan Deskripsi Aplikasi
     st.markdown("<h1 style='text-align: center; margin-top: -10px;'>📋 CEK DATA PINJAMAN KTSB MNAE</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #d2d6dc;'>🔒 Demi privasi, pastikan klik tombol 'Tutup / Bersihkan' setelah selesai.</p>", unsafe_allow_html=True)
     st.write("")
@@ -216,15 +206,13 @@ if s1 is not None:
     # Tampilkan Kartu Hasil Pencarian
     if st.session_state["search_result"]:
         res = st.session_state["search_result"]
-        
-        logo_base64 = get_image_base64(FILE_LOGO)
-        logo_card_html = f"<img src='{logo_base64}' style='width: 90px; margin-bottom: 10px;'><br>" if logo_base64 else ""
 
         st.markdown("---")
+        
+        # Kartu Hasil
         kartu_html = f"""
         <div style='background: linear-gradient(135deg, #134e5e 0%, #71b280 100%); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); font-family: Arial, sans-serif; color: white;'>
             <div style='text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 12px;'>
-                {logo_card_html}
                 <h3 style='margin: 0; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; color: #ffffff;'>DATA PINJAMAN ANDA</h3>
                 <p style='margin: 5px 0 0 0; font-size: 12px; color: #e2e8f0; letter-spacing: 1px;'>KTSB MNAE UPDATE JUNI 2026</p>
             </div>
