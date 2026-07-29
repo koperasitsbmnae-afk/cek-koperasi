@@ -6,7 +6,11 @@ import streamlit as st
 
 warnings.filterwarnings('ignore')
 
-st.set_page_config(page_title="CEK DATA PINJAMAN KTSB MNAE", layout="centered", page_icon="📋")
+st.set_page_config(
+    page_title="CEK DATA PINJAMAN KTSB MNAE",
+    layout="centered",
+    page_icon="📋"
+)
 
 # Custom CSS
 hide_streamlit_style = """
@@ -62,31 +66,33 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 FILE_EXCEL = "KOPERASI JULI 26.xlsx"
 FILE_LOG = "log_akses_nik.csv"
 
-# Pencarian lokasi logo
-POSSIBLE_LOGOS = [
-    "logo_koperasi.png",
-    "logo_koperasi.PNG",
-    "Logo_koperasi.png",
-    r"C:\Users\TECNO\logo_koperasi.png"
-]
-
-FILE_LOGO = None
-for logo_path in POSSIBLE_LOGOS:
-    if os.path.exists(logo_path):
-        FILE_LOGO = logo_path
-        break
+# Logo Koperasi Vector (Fallback Otomatis jika file png tidak ditemukan)
+LOGO_SVG = """
+<div style="text-align: center; margin-bottom: 10px;">
+    <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="46" fill="#1b4d3e" stroke="#f39c12" stroke-width="3"/>
+        <path d="M50 22 L53 28 L60 24 L60 31 L67 31 L64 38 L70 42 L65 47 L70 52 L65 57 L70 62 L64 66 L67 73 L60 73 L60 80 L53 76 L50 82 L47 76 L40 80 L40 73 L33 73 L36 66 L30 62 L35 57 L30 52 L35 47 L30 42 L36 38 L33 31 L40 31 L40 24 L47 28 Z" fill="#f1c40f"/>
+        <circle cx="50" cy="52" r="15" fill="#1b4d3e"/>
+        <path d="M50 42 L50 62 M42 48 L58 48 M42 48 L38 56 L46 56 Z M58 48 L54 56 L62 56 Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+</div>
+"""
 
 
 @st.cache_data
 def load_sheets_raw():
     try:
-        excel_file = pd.ExcelFile(FILE_EXCEL, engine="openpyxl")
-        s1 = pd.read_excel(excel_file, sheet_name="sheet 1", header=None, dtype=str)
-        s2 = pd.read_excel(excel_file, sheet_name="sheet 2", header=None, dtype=str)
-        s4 = pd.read_excel(excel_file, sheet_name="sheet 4", header=None, dtype=str)
-        return s1, s2, s4
+        if os.path.exists(FILE_EXCEL):
+            excel_file = pd.ExcelFile(FILE_EXCEL, engine="openpyxl")
+            s1 = pd.read_excel(excel_file, sheet_name="sheet 1", header=None, dtype=str)
+            s2 = pd.read_excel(excel_file, sheet_name="sheet 2", header=None, dtype=str)
+            s4 = pd.read_excel(excel_file, sheet_name="sheet 4", header=None, dtype=str)
+            return s1, s2, s4
+        else:
+            st.error(f"File {FILE_EXCEL} tidak ditemukan di server GitHub.")
+            return None, None, None
     except Exception as e:
-        st.error(f"Gagal membaca file Excel. Detail: {e}")
+        st.error(f"Gagal membaca file Excel: {e}")
         return None, None, None
 
 
@@ -138,14 +144,17 @@ def vlookup_exact(df, key, col_idx):
     return ""
 
 
+# --- PROSES RENDER TAMPILAN ---
 if s1 is not None:
-    # --- MENAMPILKAN LOGO DI ATAS JUDUL ---
-    if FILE_LOGO:
-        col_l1, col_l2, col_l3 = st.columns([1, 1, 1])
-        with col_l2:
-            st.image(FILE_LOGO, width=140)
+    # 1. Menampilkan Logo
+    if os.path.exists("logo_koperasi.png"):
+        c1, c2, c3 = st.columns([1, 1, 1])
+        with c2:
+            st.image("logo_koperasi.png", width=120)
+    else:
+        st.markdown(LOGO_SVG, unsafe_allow_html=True)
 
-    # Judul dan Deskripsi Aplikasi
+    # 2. Judul
     st.markdown("<h1 style='text-align: center; margin-top: -10px;'>📋 CEK DATA PINJAMAN KTSB MNAE</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #d2d6dc;'>🔒 Demi privasi, pastikan klik tombol 'Tutup / Bersihkan' setelah selesai.</p>", unsafe_allow_html=True)
     st.write("")
@@ -203,13 +212,11 @@ if s1 is not None:
                     "sisa_angsuran": clean_int(vlookup_exact(s4, nik_input, 7)),
                 }
 
-    # Tampilkan Kartu Hasil Pencarian
+    # Tampilkan Kartu Hasil
     if st.session_state["search_result"]:
         res = st.session_state["search_result"]
 
         st.markdown("---")
-        
-        # Kartu Hasil
         kartu_html = f"""
         <div style='background: linear-gradient(135deg, #134e5e 0%, #71b280 100%); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); font-family: Arial, sans-serif; color: white;'>
             <div style='text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 12px;'>
