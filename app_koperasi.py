@@ -6,11 +6,17 @@ import streamlit as st
 
 warnings.filterwarnings('ignore')
 
-st.set_page_config(page_title="CEK DATA PINJAMAN", layout="centered")
+# 1. Konfigurasi Halaman
+st.set_page_config(
+    page_title="CEK DATA PINJAMAN", 
+    page_icon="📋",
+    layout="centered"
+)
 
-# CSS Custom
-hide_streamlit_style = """
+# 2. CSS Custom untuk UI Modern & Responsive
+custom_css = """
     <style>
+    /* Sembunyikan elemen standar Streamlit */
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
@@ -25,39 +31,155 @@ hide_streamlit_style = """
     [data-testid="stStatusWidget"]:hover, .stAppDeployButton:hover {
         opacity: 1 !important;
     }
-    
+
+    /* Background Utama Modern (Dark Gradient) */
     .stApp {
-        background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-        background-attachment: fixed;
-    }
-    
-    h1, h2, h3, p, label {
-        color: #ffffff !important;
-    }
-    
-    .stCaption {
-        color: #d2d6dc !important;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    .stButton>button {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-        border: 1px solid #cbd5e0 !important;
-        font-weight: bold !important;
+    /* Container Card Pembungkus Utama */
+    .main-card {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        margin-top: 10px;
+        margin-bottom: 25px;
+    }
+
+    /* Header Styling */
+    .header-title {
+        color: #ffffff;
+        font-size: 24px;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
+    }
+
+    .header-subtitle {
+        color: #94a3b8;
+        font-size: 13px;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    /* Input Text Styling */
+    div[data-baseweb="input"] {
+        background-color: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid #334155 !important;
+        border-radius: 10px !important;
+        color: #ffffff !important;
+    }
+
+    div[data-baseweb="input"]:focus-within {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+    }
+
+    /* Button Primary (Cek Data) */
+    div.stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        padding: 10px 16px !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
     }
     
-    .stButton>button:hover {
-        background-color: #edf2f7 !important;
-        color: #000000 !important;
-        border-color: #a0aec0 !important;
+    div.stButton > button[kind="primary"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4) !important;
     }
-    
-    .stButton>button p {
-        color: #000000 !important;
+
+    /* Button Secondary (Tutup/Bersihkan) */
+    div.stButton > button[kind="secondary"] {
+        background: rgba(255, 255, 255, 0.05) !important;
+        color: #cbd5e1 !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        padding: 10px 16px !important;
+        transition: all 0.2s ease !important;
+    }
+
+    div.stButton > button[kind="secondary"]:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: #ffffff !important;
+    }
+
+    /* Card Hasil Data (Clean Receipt Style) */
+    .result-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        color: #1e293b;
+    }
+
+    .result-header {
+        text-align: center;
+        border-bottom: 2px dashed #e2e8f0;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+
+    .result-header h3 {
+        color: #0f172a !important;
+        font-size: 18px;
+        font-weight: 800;
+        margin: 0;
+        letter-spacing: 1px;
+    }
+
+    .result-header p {
+        color: #64748b !important;
+        font-size: 11px;
+        margin: 4px 0 0 0;
+        font-weight: 600;
+    }
+
+    .table-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 14px;
+    }
+
+    .table-label {
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .table-value {
+        color: #0f172a;
+        font-weight: 700;
+        text-align: right;
+    }
+
+    .highlight-nik {
+        background-color: #fef3c7;
+        color: #92400e;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-family: monospace;
+    }
+
+    .highlight-sisa {
+        color: #dc2626;
+        font-size: 16px;
+        font-weight: 800;
     }
     </style>
 """
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+st.markdown(custom_css, unsafe_allow_html=True)
 
 FILE_EXCEL = "KOPERASI JULI 26.xlsx"
 FILE_LOG = "log_akses_nik.csv"
@@ -127,10 +249,14 @@ def vlookup_exact(df, key, col_idx):
     return ""
 
 
-if s1 is not None:
-    st.title("📋 CEK DATA PINJAMAN KTSB MNAE")
-    st.caption("🔒 Demi privasi, pastikan klik tombol 'Tutup / Bersihkan' setelah selesai.")
+# Header Utama di dalam Card Container
+st.markdown("""
+<div class="main-card">
+    <div class="header-title">📋 CEK DATA PINJAMAN KTSB MNAE</div>
+    <div class="header-subtitle">🔒 Demi privasi, pastikan klik tombol 'Tutup / Bersihkan' setelah selesai.</div>
+""", unsafe_allow_html=True)
 
+if s1 is not None:
     if "search_result" not in st.session_state:
         st.session_state["search_result"] = None
 
@@ -139,16 +265,18 @@ if s1 is not None:
         st.session_state["search_result"] = None
 
     nik_input = st.text_input(
-        "MASUKAN NIK KTP",
+        "MASUKKAN NIK KTP",
         placeholder="Ketik 16 digit NIK KTP...",
         key="nik_query",
     ).strip()
 
+    st.write("") # Spacing kecil
+
     col1, col2 = st.columns(2)
     with col1:
-        cek_clicked = st.button("🔍 Cek Data", use_container_width=True)
+        cek_clicked = st.button("🔍 Cek Data", type="primary", use_container_width=True)
     with col2:
-        st.button("🔒 Tutup / Bersihkan", use_container_width=True, on_click=reset_data)
+        st.button("🔒 Tutup / Bersihkan", type="secondary", use_container_width=True, on_click=reset_data)
 
     if cek_clicked:
         if len(nik_input) != 16:
@@ -185,30 +313,51 @@ if s1 is not None:
                     "sisa_angsuran": clean_int(vlookup_exact(s4, nik_input, 7)),
                 }
 
-    # Tampilkan kartu jika hasil ada di Session State
-    if st.session_state["search_result"]:
-        res = st.session_state["search_result"]
-        st.markdown("---")
-        kartu_html = f"""
-        <div style='background: linear-gradient(135deg, #134e5e 0%, #71b280 100%); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); font-family: Arial, sans-serif; color: white;'>
-            <div style='text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 12px;'>
-                <h3 style='margin: 0; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; color: #ffffff;'>DATA PINJAMAN ANDA</h3>
-                <p style='margin: 5px 0 0 0; font-size: 12px; color: #e2e8f0; letter-spacing: 1px;'>KTSB MNAE UPDATE JUNI 2026</p>
-            </div>
-            <div style='background-color: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 10px; color: #333;'>
-                <table style='width:100%; border-collapse: collapse; font-size: 15px;'>
-                    <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; width: 40%; color: #4a5568;'>NIK</td><td style='padding: 10px; background-color: #fff3cd; font-weight: bold; color: #856404; border-radius: 4px;'>{res['nik']}</td></tr>
-                    <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>NAMA</td><td style='padding: 10px; font-weight: bold; color: #2b6cb0;'>{res['nama']}</td></tr>
-                    <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SIMPANAN POKOK</td><td style='padding: 10px; color: #2d3748;'>{res['simpanan_pokok']}</td></tr>
-                    <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>HUTANG</td><td style='padding: 10px; color: #2d3748;'>{res['hutang']}</td></tr>
-                    <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>TENOR PINJAMAN</td><td style='padding: 10px; color: #2d3748;'>{res['tenor']} BULAN</td></tr>
-                    <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>ANGSURAN KE</td><td style='padding: 10px; color: #2d3748;'>{res['angsuran_ke']}</td></tr>
-                    <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SISA ANGSURAN</td><td style='padding: 10px; color: #2d3748;'>{res['sisa_angsuran']}</td></tr>
-                    <tr><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SISA HUTANG</td><td style='padding: 10px; font-weight: bold; color: #e53e3e; font-size: 16px;'>{res['sisa_hutang']}</td></tr>
-                </table>
-            </div>
+st.markdown("</div>", unsafe_allow_html=True) # Penutup Main Card
+
+# Tampilkan Kartu Hasil Pencarian
+if st.session_state.get("search_result"):
+    res = st.session_state["search_result"]
+    kartu_html = f"""
+    <div class="result-card">
+        <div class="result-header">
+            <h3>DATA PINJAMAN ANDA</h3>
+            <p>KTSB MNAE UPDATE JUNI 2026</p>
         </div>
-        """
-        st.markdown(kartu_html, unsafe_allow_html=True)
-    elif not cek_clicked:
-        st.info("💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' untuk melihat informasi.")
+        <div class="table-row">
+            <span class="table-label">NIK</span>
+            <span class="table-value highlight-nik">{res['nik']}</span>
+        </div>
+        <div class="table-row">
+            <span class="table-label">NAMA</span>
+            <span class="table-value" style="color: #2563eb;">{res['nama']}</span>
+        </div>
+        <div class="table-row">
+            <span class="table-label">SIMPANAN POKOK</span>
+            <span class="table-value">{res['simpanan_pokok']}</span>
+        </div>
+        <div class="table-row">
+            <span class="table-label">HUTANG</span>
+            <span class="table-value">{res['hutang']}</span>
+        </div>
+        <div class="table-row">
+            <span class="table-label">TENOR PINJAMAN</span>
+            <span class="table-value">{res['tenor']} BULAN</span>
+        </div>
+        <div class="table-row">
+            <span class="table-label">ANGSURAN KE</span>
+            <span class="table-value">{res['angsuran_ke']}</span>
+        </div>
+        <div class="table-row">
+            <span class="table-label">SISA ANGSURAN</span>
+            <span class="table-value">{res['sisa_angsuran']}</span>
+        </div>
+        <div class="table-row" style="border-bottom: none; padding-top: 15px;">
+            <span class="table-label" style="font-size: 16px; color: #0f172a;">SISA HUTANG</span>
+            <span class="table-value highlight-sisa">{res['sisa_hutang']}</span>
+        </div>
+    </div>
+    """
+    st.markdown(kartu_html, unsafe_allow_html=True)
+elif not cek_clicked:
+    st.info("💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' untuk melihat informasi.")
