@@ -9,7 +9,7 @@ warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="CEK DATA PINJAMAN KTSB MNAE", layout="centered", page_icon="📋")
 
-# Custom CSS untuk tampilan dan latar belakang
+# Custom CSS
 hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -63,17 +63,30 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 FILE_EXCEL = "KOPERASI JULI 26.xlsx"
 FILE_LOG = "log_akses_nik.csv"
 
-# Deteksi file logo secara otomatis
-if os.path.exists("logo_koperasi.png"):
-    FILE_LOGO = "logo_koperasi.png"
-elif os.path.exists("1785240565423.png"):
-    FILE_LOGO = "1785240565423.png"
-else:
-    FILE_LOGO = None
+# Otomatis cari file logo dari berbagai kemungkinan nama file
+FILE_LOGO = None
+kemungkinan_nama_logo = [
+    "logo_koperasi.png",
+    "Logo_koperasi.png",
+    "logo_koperasi.PNG",
+    "LOGO_KOPERASI.png",
+    "1785240565423.png"
+]
+
+for nama_file in kemungkinan_nama_logo:
+    if os.path.exists(nama_file):
+        FILE_LOGO = nama_file
+        break
+
+# Jika belum ketemu juga, cari file .png berakhiran logo atau angka pertama di folder
+if not FILE_LOGO:
+    for file in os.listdir("."):
+        if file.lower().endswith((".png", ".jpg", ".jpeg")) and file != "favicon.ico":
+            FILE_LOGO = file
+            break
 
 
 def get_image_base64(path):
-    """Mengubah gambar menjadi format Base64 agar dapat disematkan rapi ke HTML."""
     if path and os.path.exists(path):
         with open(path, "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read()).decode()
@@ -150,7 +163,7 @@ if s1 is not None:
         with col_center:
             st.image(FILE_LOGO, use_container_width=True)
     
-    # Judul dan Deskripsi Aplikasi
+    # Judul dan Deskripsi
     st.markdown("<h1 style='text-align: center; margin-top: -10px;'>📋 CEK DATA PINJAMAN KTSB MNAE</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #d2d6dc;'>🔒 Demi privasi, pastikan klik tombol 'Tutup / Bersihkan' setelah selesai.</p>", unsafe_allow_html=True)
     st.write("")
