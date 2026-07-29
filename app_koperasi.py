@@ -1,51 +1,214 @@
+from datetime import datetime
+import os
+import warnings
+import pandas as pd
 import streamlit as st
 
-# 1. Konfigurasi Halaman Streamlit
-st.set_page_config(
-    page_title="CEK DATA PINJAMAN KTSB MNAE",
-    page_icon="📋",
-    layout="centered"
-)
+warnings.filterwarnings('ignore')
 
-# 2. Tampilkan Logo Koperasi di Tengah (Memanggil logo_koperasi.png yang baru dan transparan)
-# Kami menggunakan trik columns untuk memusatkan gambar dengan parameter width
-col1, col2, col3 = st.columns([1, 1, 1])
-with col2: # Kolom tengah
-    st.image("logo_koperasi.png", width=180) # Sesuaikan width jika perlu
+st.set_page_config(page_title="CEK DATA PINJAMAN", layout="centered")
 
-# 3. Judul Aplikasi (Dipusatkan)
-st.markdown(
-    "<h1 style='text-align: center; color: white; margin-top: -30px;'>📋 CEK DATA PINJAMAN KTSB MNAE</h1>", 
-    unsafe_allow_html=True
-)
+# CSS Custom
+hide_streamlit_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    [data-testid="stStatusWidget"], .stAppDeployButton {
+        transform: scale(0.75) !important;
+        transform-origin: bottom right !important;
+        opacity: 0.7 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    [data-testid="stStatusWidget"]:hover, .stAppDeployButton:hover {
+        opacity: 1 !important;
+    }
+    
+    .stApp {
+        background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        background-attachment: fixed;
+    }
+    
+    h1, h2, h3, p, label {
+        color: #ffffff !important;
+    }
+    
+    .stCaption {
+        color: #d2d6dc !important;
+    }
 
-# 4. Pesan Privasi
-st.caption("<div style='text-align: center;'>🔒 Demi privasi, pastikan klik tombol 'Tutup / Bersihkan' setelah selesai.</div>", unsafe_allow_html=True)
+    .stButton>button {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #cbd5e0 !important;
+        font-weight: bold !important;
+    }
+    
+    .stButton>button:hover {
+        background-color: #edf2f7 !important;
+        color: #000000 !important;
+        border-color: #a0aec0 !important;
+    }
+    
+    .stButton>button p {
+        color: #000000 !important;
+    }
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-st.write("<br>", unsafe_allow_html=True) # Jarak
+FILE_EXCEL = "KOPERASI JULI 26.xlsx"
+FILE_LOG = "log_akses_nik.csv"
 
-# 5. Form Input NIK KTP
-nik_input = st.text_input("MASUKKAN NIK KTP", placeholder="Ketik 16 digit NIK KTP...")
 
-# 6. Tombol Aksi
-col1_btn, col2_btn = st.columns(2)
+@st.cache_data
+def load_sheets_raw():
+    try:
+        excel_file = pd.ExcelFile(FILE_EXCEL, engine="openpyxl")
+        # Membaca sebagai string (dtype=str) agar NIK tidak rusak/berubah format
+        s1 = pd.read_excel(excel_file, sheet_name="sheet 1", header=None, dtype=str)
+        s2 = pd.read_excel(excel_file, sheet_name="sheet 2", header=None, dtype=str)
+        s4 = pd.read_excel(excel_file, sheet_name="sheet 4", header=None, dtype=str)
+        return s1, s2, s4
+    except Exception as e:
+        st.error(f"Gagal membaca file Excel. Detail: {e}")
+        return None, None, None
 
-with col1_btn:
-    btn_cek = st.button("🔍 Cek Data", use_container_width=True)
 
-with col2_btn:
-    btn_tutup = st.button("🔒 Tutup / Bersihkan", use_container_width=True)
+s1, s2, s4 = load_sheets_raw()
 
-# 7. Logika Tombol
-if btn_cek:
-    if len(nik_input.strip()) == 16 and nik_input.isdigit():
-        st.info(f"💡 Memproses pencarian data untuk NIK: {nik_input}...")
-        # Tambahkan logika pencarian data di sini
+
+def catat_log(nik, nama):
+    waktu = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    data_baru = pd.DataFrame({"Waktu": [waktu], "NIK": [nik], "Nama": [nama]})
+    if os.path.exists(FILE_LOG):
+        data_baru.to_csv(FILE_LOG, mode="a", header=False, index=False)
     else:
-        st.error("⚠️ Masukkan 16 digit NIK KTP yang valid!")
+        data_baru.to_csv(FILE_LOG, mode="w", header=True, index=False)
 
-if btn_tutup:
-    st.rerun()
 
-# 8. Info Petunjuk Bawah
-st.info("💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' untuk melihat informasi.")
+def format_rupiah(nilai):
+    try:
+        clean_val = str(nilai).replace(",", "").split(".")[0]
+        angka = int(clean_val)
+        return f"Rp {angka:,}".replace(",", ".")
+    except Exception:
+        return str(nilai)
+
+
+def clean_int(val):
+    try:
+        clean_val = str(val).split(".")[0]
+        return str(int(clean_val)) if clean_val and clean_val.lower() != "nan" else "0"
+    except Exception:
+        return "0"
+
+
+def vlookup_exact(df, key, col_idx):
+    """Pencarian VLOOKUP yang telah dioptimalkan dengan Pandas vectorization."""
+    if df is None or df.empty:
+        return ""
+    
+    target_col = col_idx - 1
+    # Memeriksa apakah NIK ada di salah satu sel pada baris dataframe
+    mask = df.apply(lambda row: row.astype(str).str.strip().eq(key).any(), axis=1)
+    matched_rows = df[mask]
+    
+    if not matched_rows.empty:
+        row = matched_rows.iloc[0]
+        if target_col < len(row):
+            val = str(row.iloc[target_col]).strip()
+            if val and val.lower() not in ["nan", "none"]:
+                if val.endswith(".0"):
+                    val = val[:-2]
+                return val
+    return ""
+
+
+if s1 is not None:
+    st.title("📋 CEK DATA PINJAMAN KTSB MNAE")
+    st.caption("🔒 Demi privasi, pastikan klik tombol 'Tutup / Bersihkan' setelah selesai.")
+
+    if "search_result" not in st.session_state:
+        st.session_state["search_result"] = None
+
+    def reset_data():
+        st.session_state["nik_query"] = ""
+        st.session_state["search_result"] = None
+
+    nik_input = st.text_input(
+        "MASUKAN NIK KTP",
+        placeholder="Ketik 16 digit NIK KTP...",
+        key="nik_query",
+    ).strip()
+
+    col1, col2 = st.columns(2)
+    with col1:
+        cek_clicked = st.button("🔍 Cek Data", use_container_width=True)
+    with col2:
+        st.button("🔒 Tutup / Bersihkan", use_container_width=True, on_click=reset_data)
+
+    if cek_clicked:
+        if len(nik_input) != 16:
+            st.error("❌ NIK HARUS TEPAT 16 DIGIT!")
+            st.session_state["search_result"] = None
+        else:
+            nama = vlookup_exact(s1, nik_input, 2)
+            if not nama:
+                nama = vlookup_exact(s4, nik_input, 2)
+
+            if not nama:
+                st.error("❌ DATA TIDAK DITEMUKAN / NIK SALAH")
+                st.session_state["search_result"] = None
+            else:
+                catat_log(nik_input, nama)
+
+                simpanan_pokok_raw = (
+                    vlookup_exact(s2, nik_input, 3)
+                    or vlookup_exact(s2, nik_input, 2)
+                    or "0"
+                )
+                hutang_raw = vlookup_exact(s4, nik_input, 10) or "0"
+                sisa_hutang_raw = vlookup_exact(s4, nik_input, 3) or "0"
+
+                # Simpan hasil pencarian ke Session State
+                st.session_state["search_result"] = {
+                    "nik": nik_input,
+                    "nama": nama,
+                    "simpanan_pokok": format_rupiah(simpanan_pokok_raw),
+                    "hutang": format_rupiah(hutang_raw),
+                    "sisa_hutang": format_rupiah(sisa_hutang_raw),
+                    "tenor": clean_int(vlookup_exact(s4, nik_input, 5)),
+                    "angsuran_ke": clean_int(vlookup_exact(s4, nik_input, 6)),
+                    "sisa_angsuran": clean_int(vlookup_exact(s4, nik_input, 7)),
+                }
+
+    # Tampilkan kartu jika hasil ada di Session State
+    if st.session_state["search_result"]:
+        res = st.session_state["search_result"]
+        st.markdown("---")
+        kartu_html = f"""
+        <div style='background: linear-gradient(135deg, #134e5e 0%, #71b280 100%); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); font-family: Arial, sans-serif; color: white;'>
+            <div style='text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 12px;'>
+                <h3 style='margin: 0; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; color: #ffffff;'>DATA PINJAMAN ANDA</h3>
+                <p style='margin: 5px 0 0 0; font-size: 12px; color: #e2e8f0; letter-spacing: 1px;'>KTSB MNAE UPDATE JUNI 2026</p>
+            </div>
+            <div style='background-color: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 10px; color: #333;'>
+                <table style='width:100%; border-collapse: collapse; font-size: 15px;'>
+                    <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; width: 40%; color: #4a5568;'>NIK</td><td style='padding: 10px; background-color: #fff3cd; font-weight: bold; color: #856404; border-radius: 4px;'>{res['nik']}</td></tr>
+                    <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>NAMA</td><td style='padding: 10px; font-weight: bold; color: #2b6cb0;'>{res['nama']}</td></tr>
+                    <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SIMPANAN POKOK</td><td style='padding: 10px; color: #2d3748;'>{res['simpanan_pokok']}</td></tr>
+                    <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>HUTANG</td><td style='padding: 10px; color: #2d3748;'>{res['hutang']}</td></tr>
+                    <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>TENOR PINJAMAN</td><td style='padding: 10px; color: #2d3748;'>{res['tenor']} BULAN</td></tr>
+                    <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>ANGSURAN KE</td><td style='padding: 10px; color: #2d3748;'>{res['angsuran_ke']}</td></tr>
+                    <tr style='border-bottom: 1px solid #edf2f7;'><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SISA ANGSURAN</td><td style='padding: 10px; color: #2d3748;'>{res['sisa_angsuran']}</td></tr>
+                    <tr><td style='padding: 10px; font-weight: bold; color: #4a5568;'>SISA HUTANG</td><td style='padding: 10px; font-weight: bold; color: #e53e3e; font-size: 16px;'>{res['sisa_hutang']}</td></tr>
+                </table>
+            </div>
+        </div>
+        """
+        st.markdown(kartu_html, unsafe_allow_html=True)
+    elif not cek_clicked:
+        st.info("💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' untuk melihat informasi.")
