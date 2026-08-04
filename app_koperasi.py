@@ -65,6 +65,14 @@ custom_css = """
         font-weight: 500;
     }
 
+    /* PENEGASAN TEKS LABEL 'MASUKKAN NIK KTP' */
+    div[data-testid="stWidgetLabel"] label, p {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+        letter-spacing: 0.5px !important;
+    }
+
     div[data-baseweb="input"] {
         background-color: rgba(15, 23, 42, 0.6) !important;
         border: 1px solid #334155 !important;
@@ -133,9 +141,9 @@ custom_css = """
 
     .result-header p {
         color: #64748b !important;
-        font-size: 11px;
+        font-size: 11px !important;
         margin: 4px 0 0 0;
-        font-weight: 600;
+        font-weight: 600 !important;
     }
 
     .table-row {
