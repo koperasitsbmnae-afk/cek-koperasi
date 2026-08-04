@@ -36,14 +36,13 @@ custom_css = """
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
+    /* KOTAK JUDUL UTAMA - BIRU LANGIT CERAH */
     .main-card {
-        background: rgba(30, 41, 59, 0.7);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 20px;
         padding: 25px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 10px 30px rgba(0, 180, 219, 0.3);
         margin-top: 10px;
         margin-bottom: 25px;
     }
@@ -51,17 +50,19 @@ custom_css = """
     .header-title {
         color: #ffffff;
         font-size: 22px;
-        font-weight: 700;
+        font-weight: 800;
         text-align: center;
         margin-bottom: 6px;
         letter-spacing: 0.5px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.15);
     }
 
     .header-subtitle {
-        color: #94a3b8;
+        color: #e0f2fe;
         font-size: 13px;
         text-align: center;
         margin-bottom: 20px;
+        font-weight: 500;
     }
 
     div[data-baseweb="input"] {
@@ -174,10 +175,10 @@ custom_css = """
 st.markdown(custom_css, unsafe_allow_html=True)
 
 # Nama File Excel Utama & Log
-FILE_EXCEL = "DATA KOPERASI.xlsx"
+FILE_EXCEL = "KOPERASI JULI 26.xlsx"
 FILE_LOG = "log_akses_nik.csv"
 
-# Label Keterangan Update Data pada Kartu Hasil (Sudah Diubah ke JULI 2026)
+# Teks Keterangan Update Data
 TEKS_UPDATE_DATA = "KTSB MNAE UPDATE JULI 2026"
 
 
@@ -242,11 +243,12 @@ def vlookup_exact(df, key, col_idx):
     return ""
 
 
-# Header Utama
+# Header Utama UI
 st.markdown("""
 <div class="main-card">
     <div class="header-title">📋 CEK DATA PINJAMAN KTSB MNAE</div>
     <div class="header-subtitle">🔒 Demi privasi, pastikan klik 'Tutup / Bersihkan' setelah selesai.</div>
+</div>
 """, unsafe_allow_html=True)
 
 if s1 is not None:
@@ -304,8 +306,6 @@ if s1 is not None:
                     "angsuran_ke": clean_int(vlookup_exact(s4, nik_input, 6)),
                     "sisa_angsuran": clean_int(vlookup_exact(s4, nik_input, 7)),
                 }
-
-st.markdown("</div>", unsafe_allow_html=True)
 
 # Tampilkan Kartu Hasil
 if st.session_state.get("search_result"):
