@@ -13,10 +13,9 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. CSS Custom untuk UI Modern & Responsive
+# 2. Custom CSS untuk UI Modern & Responsive
 custom_css = """
     <style>
-    /* Sembunyikan elemen standar Streamlit */
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
@@ -32,29 +31,26 @@ custom_css = """
         opacity: 1 !important;
     }
 
-    /* Background Utama Modern (Dark Gradient) */
     .stApp {
         background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    /* Container Card Pembungkus Utama */
     .main-card {
         background: rgba(30, 41, 59, 0.7);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 20px;
-        padding: 30px;
+        padding: 25px;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         margin-top: 10px;
         margin-bottom: 25px;
     }
 
-    /* Header Styling */
     .header-title {
         color: #ffffff;
-        font-size: 24px;
+        font-size: 22px;
         font-weight: 700;
         text-align: center;
         margin-bottom: 6px;
@@ -65,10 +61,9 @@ custom_css = """
         color: #94a3b8;
         font-size: 13px;
         text-align: center;
-        margin-bottom: 25px;
+        margin-bottom: 20px;
     }
 
-    /* Input Text Styling */
     div[data-baseweb="input"] {
         background-color: rgba(15, 23, 42, 0.6) !important;
         border: 1px solid #334155 !important;
@@ -81,7 +76,6 @@ custom_css = """
         box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
     }
 
-    /* Button Primary (Cek Data) */
     div.stButton > button[kind="primary"] {
         background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
         color: #ffffff !important;
@@ -98,7 +92,6 @@ custom_css = """
         box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4) !important;
     }
 
-    /* Button Secondary (Tutup/Bersihkan) */
     div.stButton > button[kind="secondary"] {
         background: rgba(255, 255, 255, 0.05) !important;
         color: #cbd5e1 !important;
@@ -114,7 +107,6 @@ custom_css = """
         color: #ffffff !important;
     }
 
-    /* Card Hasil Data (Clean Receipt Style) */
     .result-card {
         background: #ffffff;
         border-radius: 16px;
@@ -181,21 +173,24 @@ custom_css = """
 """
 st.markdown(custom_css, unsafe_allow_html=True)
 
-FILE_EXCEL = "KOPERASI JULI 26.xlsx"
+# Nama File Excel Utama & Log
+FILE_EXCEL = "DATA KOPERASI.xlsx"
 FILE_LOG = "log_akses_nik.csv"
+
+# Label Keterangan Update Data pada Kartu Hasil
+TEKS_UPDATE_DATA = "KTSB MNAE UPDATE AGUSTUS 2026"
 
 
 @st.cache_data
 def load_sheets_raw():
     try:
         excel_file = pd.ExcelFile(FILE_EXCEL, engine="openpyxl")
-        # Membaca sebagai string (dtype=str) agar NIK tidak rusak/berubah format
         s1 = pd.read_excel(excel_file, sheet_name="sheet 1", header=None, dtype=str)
         s2 = pd.read_excel(excel_file, sheet_name="sheet 2", header=None, dtype=str)
         s4 = pd.read_excel(excel_file, sheet_name="sheet 4", header=None, dtype=str)
         return s1, s2, s4
     except Exception as e:
-        st.error(f"Gagal membaca file Excel. Detail: {e}")
+        st.error(f"Gagal membaca file Excel '{FILE_EXCEL}'. Detail Error: {e}")
         return None, None, None
 
 
@@ -217,7 +212,7 @@ def format_rupiah(nilai):
         angka = int(clean_val)
         return f"Rp {angka:,}".replace(",", ".")
     except Exception:
-        return str(nilai)
+        return "Rp 0" if str(nilai).strip() in ["", "nan", "None"] else str(nilai)
 
 
 def clean_int(val):
@@ -229,12 +224,10 @@ def clean_int(val):
 
 
 def vlookup_exact(df, key, col_idx):
-    """Pencarian VLOOKUP yang telah dioptimalkan dengan Pandas vectorization."""
     if df is None or df.empty:
         return ""
     
     target_col = col_idx - 1
-    # Memeriksa apakah NIK ada di salah satu sel pada baris dataframe
     mask = df.apply(lambda row: row.astype(str).str.strip().eq(key).any(), axis=1)
     matched_rows = df[mask]
     
@@ -249,11 +242,11 @@ def vlookup_exact(df, key, col_idx):
     return ""
 
 
-# Header Utama di dalam Card Container
+# Header Utama
 st.markdown("""
 <div class="main-card">
     <div class="header-title">📋 CEK DATA PINJAMAN KTSB MNAE</div>
-    <div class="header-subtitle">🔒 Demi privasi, pastikan klik tombol 'Tutup / Bersihkan' setelah selesai.</div>
+    <div class="header-subtitle">🔒 Demi privasi, pastikan klik 'Tutup / Bersihkan' setelah selesai.</div>
 """, unsafe_allow_html=True)
 
 if s1 is not None:
@@ -268,9 +261,9 @@ if s1 is not None:
         "MASUKKAN NIK KTP",
         placeholder="Ketik 16 digit NIK KTP...",
         key="nik_query",
-    ).strip()
+    ).strip().replace(" ", "")
 
-    st.write("") # Spacing kecil
+    st.write("")
 
     col1, col2 = st.columns(2)
     with col1:
@@ -279,8 +272,8 @@ if s1 is not None:
         st.button("🔒 Tutup / Bersihkan", type="secondary", use_container_width=True, on_click=reset_data)
 
     if cek_clicked:
-        if len(nik_input) != 16:
-            st.error("❌ NIK HARUS TEPAT 16 DIGIT!")
+        if len(nik_input) != 16 or not nik_input.isdigit():
+            st.error("❌ NIK HARUS BERISI TEPAT 16 DIGIT ANGKA!")
             st.session_state["search_result"] = None
         else:
             nama = vlookup_exact(s1, nik_input, 2)
@@ -301,7 +294,6 @@ if s1 is not None:
                 hutang_raw = vlookup_exact(s4, nik_input, 10) or "0"
                 sisa_hutang_raw = vlookup_exact(s4, nik_input, 3) or "0"
 
-                # Simpan hasil pencarian ke Session State
                 st.session_state["search_result"] = {
                     "nik": nik_input,
                     "nama": nama,
@@ -313,16 +305,16 @@ if s1 is not None:
                     "sisa_angsuran": clean_int(vlookup_exact(s4, nik_input, 7)),
                 }
 
-st.markdown("</div>", unsafe_allow_html=True) # Penutup Main Card
+st.markdown("</div>", unsafe_allow_html=True)
 
-# Tampilkan Kartu Hasil Pencarian
+# Tampilkan Kartu Hasil
 if st.session_state.get("search_result"):
     res = st.session_state["search_result"]
     kartu_html = f"""
     <div class="result-card">
         <div class="result-header">
             <h3>DATA PINJAMAN ANDA</h3>
-            <p>KTSB MNAE UPDATE JUNI 2026</p>
+            <p>{TEKS_UPDATE_DATA}</p>
         </div>
         <div class="table-row">
             <span class="table-label">NIK</span>
