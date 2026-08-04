@@ -177,8 +177,8 @@ st.markdown(custom_css, unsafe_allow_html=True)
 FILE_EXCEL = "DATA KOPERASI.xlsx"
 FILE_LOG = "log_akses_nik.csv"
 
-# Label Keterangan Update Data pada Kartu Hasil
-TEKS_UPDATE_DATA = "KTSB MNAE UPDATE AGUSTUS 2026"
+# Label Keterangan Update Data pada Kartu Hasil (Sudah Diubah ke JULI 2026)
+TEKS_UPDATE_DATA = "KTSB MNAE UPDATE JULI 2026"
 
 
 @st.cache_data
