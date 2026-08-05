@@ -3,6 +3,7 @@ import os
 import warnings
 import pandas as pd
 import streamlit as st
+import base64
 
 warnings.filterwarnings('ignore')
 
@@ -13,7 +14,41 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. Custom CSS UI Asli dengan Background Kebudayaan Indonesia
+# 2. Fungsi membaca gambar bg_indonesia.jpg dari GitHub sebagai Base64
+def get_base64_of_bin_file(bin_file):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+# Panggil file bg_indonesia.jpg yang ada di repository Anda
+bg_image_path = "bg_indonesia.jpg"
+
+if os.path.exists(bg_image_path):
+    encoded_bg = get_base64_of_bin_file(bg_image_path)
+    bg_style = f"""
+    <style>
+    .stApp, [data-testid="stAppViewContainer"] {{
+        background-image: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), 
+                          url("data:image/jpeg;base64,{encoded_bg}") !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+    }}
+    </style>
+    """
+else:
+    bg_style = """
+    <style>
+    .stApp, [data-testid="stAppViewContainer"] {
+        background-color: #0f172a !important;
+    }
+    </style>
+    """
+
+st.markdown(bg_style, unsafe_allow_html=True)
+
+# 3. Custom CSS UI Asli (Komponen Dalam)
 custom_css = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -29,16 +64,6 @@ custom_css = """
     
     [data-testid="stStatusWidget"]:hover, .stAppDeployButton:hover {
         opacity: 1 !important;
-    }
-
-    /* BACKGROUND LUAR: KEBUDAYAAN INDONESIA (Indonesian_Culture.jpg) */
-    .stApp {
-        background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), 
-                    url('https://upload.wikimedia.org/wikipedia/commons/2/22/Indonesian_Culture.jpg');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     /* KOTAK JUDUL UTAMA ASLI */
