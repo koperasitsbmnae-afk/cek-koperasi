@@ -252,8 +252,8 @@ st.markdown(custom_css, unsafe_allow_html=True)
 FILE_EXCEL = "DATA KOPERASI.xlsx"
 FILE_LOG = "log_akses_nik.csv"
 
-# Teks Keterangan Update Data
-TEKS_UPDATE_DATA = "UPDATE JULI 2026"
+# Teks Keterangan Periode Data
+TEKS_UPDATE_DATA = "PERIODE JULI 2026"
 
 
 @st.cache_data(ttl=60)
@@ -281,7 +281,7 @@ def catat_log(nik, nama):
         data_baru.to_csv(FILE_LOG, mode="w", header=True, index=False)
 
 
-# PERBAIKAN: Format Rupiah dengan Pembulatan Matriks (Menangani angka desimal seperti 0.999...)
+# Format Rupiah dengan Pembulatan Matriks
 def format_rupiah(nilai):
     try:
         if not nilai or str(nilai).strip().lower() in ["nan", "none", ""]:
@@ -293,7 +293,7 @@ def format_rupiah(nilai):
         return "Rp 0" if str(nilai).strip() in ["", "nan", "None"] else str(nilai)
 
 
-# PERBAIKAN: Pembersihan Integer dengan Pembulatan Matriks (Menangani angka desimal seperti 0.999... -> 1)
+# Pembersihan Integer dengan Pembulatan Matriks
 def clean_int(val):
     try:
         if not val or str(val).strip().lower() in ["nan", "none", ""]:
