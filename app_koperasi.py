@@ -55,6 +55,11 @@ custom_css = """
     header {visibility: hidden;}
     footer {visibility: hidden;}
     
+    /* HILANGKAN TEKS 'PRESS ENTER TO APPLY' */
+    div[data-testid="stInputInstruction"] {
+        display: none !important;
+    }
+    
     [data-testid="stStatusWidget"], .stAppDeployButton {
         transform: scale(0.75) !important;
         transform-origin: bottom right !important;
