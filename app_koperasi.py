@@ -48,7 +48,7 @@ else:
 
 st.markdown(bg_style, unsafe_allow_html=True)
 
-# 3. Custom CSS UI Asli (Komponen Dalam)
+# 3. Custom CSS UI
 custom_css = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -71,7 +71,7 @@ custom_css = """
         opacity: 1 !important;
     }
 
-    /* KOTAK JUDUL UTAMA ASLI */
+    /* KOTAK JUDUL UTAMA */
     .main-card {
         background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -100,7 +100,7 @@ custom_css = """
         font-weight: 500;
     }
 
-    /* TEKS & INPUT FIELD ASLI */
+    /* TEKS & INPUT FIELD */
     div[data-testid="stWidgetLabel"] label, p {
         color: #ffffff !important;
         font-weight: 700 !important;
@@ -121,7 +121,7 @@ custom_css = """
         box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
     }
 
-    /* TOMBOL CEK DATA ASLI */
+    /* TOMBOL CEK DATA */
     div.stButton > button[kind="primary"] {
         background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
         color: #ffffff !important;
@@ -138,7 +138,7 @@ custom_css = """
         box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4) !important;
     }
 
-    /* TOMBOL BERSIHKAN ASLI */
+    /* TOMBOL BERSIHKAN */
     div.stButton > button[kind="secondary"] {
         background: rgba(255, 255, 255, 0.1) !important;
         color: #cbd5e1 !important;
@@ -155,7 +155,7 @@ custom_css = """
         color: #ffffff !important;
     }
 
-    /* KARTU HASIL PENCARIAN ASLI (KOTAK PUTIH) */
+    /* KARTU HASIL PENCARIAN (KOTAK PUTIH) */
     .result-card {
         background: #ffffff;
         border-radius: 16px;
@@ -171,7 +171,6 @@ custom_css = """
         margin-bottom: 15px;
     }
 
-    /* Sembunyikan ikon link Streamlit */
     .result-header h3 a {
         display: none !important;
     }
@@ -180,50 +179,58 @@ custom_css = """
         color: #0f172a !important;
         font-size: 18px;
         font-weight: 800;
-        margin: 0;
+        margin: 0 0 10px 0;
         letter-spacing: 1px;
         text-align: center;
     }
 
-    /* ANIMASI BERNAFAS & RGB WARNA PEKAT UNTUK BACKGROUND PUTIH */
-    @keyframes rgbBreathingDark {
+    /* ANIMASI GLOW & RGB UNTUK KOTAK HITAM */
+    @keyframes rgbGlowBox {
         0% {
-            color: #dc2626 !important; /* Merah Pekat */
-            transform: scale(1);
-            text-shadow: 0 0 4px rgba(220, 38, 38, 0.2);
+            color: #ff4d4d !important;
+            border-color: #ff4d4d !important;
+            box-shadow: 0 0 12px rgba(255, 77, 77, 0.5);
         }
         25% {
-            color: #7c3aed !important; /* Ungu Pekat */
-            transform: scale(1.03);
-            text-shadow: 0 0 6px rgba(124, 58, 237, 0.3);
+            color: #a855f7 !important;
+            border-color: #a855f7 !important;
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
         }
         50% {
-            color: #1d4ed8 !important; /* Biru Pekat */
-            transform: scale(1);
-            text-shadow: 0 0 4px rgba(29, 78, 216, 0.2);
+            color: #38bdf8 !important;
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
         }
         75% {
-            color: #059669 !important; /* Hijau Pekat */
-            transform: scale(1.03);
-            text-shadow: 0 0 6px rgba(5, 150, 105, 0.3);
+            color: #34d399 !important;
+            border-color: #34d399 !important;
+            box-shadow: 0 0 12px rgba(52, 211, 153, 0.5);
         }
         100% {
-            color: #dc2626 !important; /* Kembali ke Merah */
-            transform: scale(1);
-            text-shadow: 0 0 4px rgba(220, 38, 38, 0.2);
+            color: #ff4d4d !important;
+            border-color: #ff4d4d !important;
+            box-shadow: 0 0 12px rgba(255, 77, 77, 0.5);
         }
     }
 
-    .result-header p {
-        font-size: 18px !important;
-        font-weight: 800 !important;
-        margin: 6px 0 0 0;
-        letter-spacing: 1px;
-        text-align: center;
+    /* BINGKAI HITAM KHUSUS TEKS UPDATE */
+    .update-box {
+        background-color: #0f172a !important; /* Latar Belakang Gelap / Hitam */
+        border: 2px solid #38bdf8;
+        border-radius: 12px;
+        padding: 8px 20px;
         display: inline-block;
-        
-        /* Panggil Animasi RGB Warna Pekat */
-        animation: rgbBreathingDark 3.5s ease-in-out infinite !important;
+        margin-top: 5px;
+        animation: rgbGlowBox 3.5s ease-in-out infinite !important;
+    }
+
+    .update-box p {
+        font-size: 16px !important;
+        font-weight: 800 !important;
+        margin: 0 !important;
+        letter-spacing: 1.5px !important;
+        text-align: center !important;
+        color: inherit !important;
     }
 
     .table-row {
@@ -331,7 +338,7 @@ def vlookup_exact(df, key, col_idx):
     return ""
 
 
-# Header Utama UI Asli
+# Header Utama
 st.markdown("""
 <div class="main-card">
     <div class="header-title">📋 CEK DATA PINJAMAN KTSB MNAE</div>
@@ -398,14 +405,16 @@ if s1 is not None:
                     "sisa_angsuran": clean_int(vlookup_exact(s4, nik_input, 7)),
                 }
 
-# Tampilkan Kartu Hasil Asli
+# Tampilkan Kartu Hasil
 if st.session_state.get("search_result"):
     res = st.session_state["search_result"]
     kartu_html = f"""
     <div class="result-card">
         <div class="result-header">
             <h3>DATA PINJAMAN ANDA</h3>
-            <p>{TEKS_UPDATE_DATA}</p>
+            <div class="update-box">
+                <p>{TEKS_UPDATE_DATA}</p>
+            </div>
         </div>
         <div class="table-row">
             <span class="table-label">NIK</span>
