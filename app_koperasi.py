@@ -184,14 +184,34 @@ custom_css = """
         text-align: center;
     }
 
-    /* KUNCI TEKS UPDATE AGAR GELAP PEKAT DAN JELAS */
+    /* ANIMASI GERAKAN MEMBESAR - MENGECIL (PULSING) */
+    @keyframes pulseMove {
+        0% {
+            transform: scale(1);
+            opacity: 0.85;
+        }
+        50% {
+            transform: scale(1.12);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0.85;
+        }
+    }
+
+    /* TEKS UPDATE BERGERAK HALUS */
     .result-header p.text-update {
-        color: #1e293b !important; /* Warna Gelap Pekat */
+        color: #1e293b !important; /* Biru Tua Pekat / Gelap */
         font-size: 16px !important;
         font-weight: 800 !important;
-        margin: 0 !important;
+        margin: 4px 0 0 0 !important;
         letter-spacing: 1.5px !important;
         text-align: center !important;
+        display: inline-block !important;
+        
+        /* Panggil Efek Animasi Bergerak */
+        animation: pulseMove 2.2s ease-in-out infinite !important;
     }
 
     .table-row {
