@@ -8,12 +8,12 @@ warnings.filterwarnings('ignore')
 
 # 1. Konfigurasi Halaman
 st.set_page_config(
-    page_title="CEK DATA PINJAMAN", 
-    page_icon="📋",
+    page_title="CEK DATA PINJAMAN - HUT RI 81", 
+    page_icon="🇮🇩",
     layout="centered"
 )
 
-# 2. Custom CSS UI Modern, Glassmorphism & Background Keuangan Elegan
+# 2. Custom CSS UI Modern Bertema Kemerdekaan RI & Garuda Pancasila
 custom_css = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -31,26 +31,32 @@ custom_css = """
         opacity: 1 !important;
     }
 
-    /* BACKGROUND TEMA KEUANGAN & KOPERASI MODERN (NON-CANDLESTICK) */
+    /* BACKGROUND TEMATIK HUT RI & GARUDA PANCASILA */
     .stApp {
-        background: linear-gradient(rgba(10, 25, 47, 0.82), rgba(15, 23, 42, 0.90)), 
-                    url('https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=1920&auto=format&fit=crop');
+        background: linear-gradient(rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.90)), 
+                    url('https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?q=80&w=1920&auto=format&fit=crop');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    /* KOTAK JUDUL UTAMA - GRADASI TEAL/BLUE DENGAN EFEK GLOW */
+    /* KOTAK JUDUL UTAMA - GRADASI MERAH MERDEKA & GOLD DENGAN LOGO GARUDA */
     .main-card {
-        background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
-        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+        border: 2px solid #f59e0b;
         border-radius: 20px;
         padding: 25px;
-        box-shadow: 0 12px 35px rgba(13, 148, 136, 0.35);
+        box-shadow: 0 12px 35px rgba(185, 28, 28, 0.5);
         margin-top: 10px;
         margin-bottom: 25px;
-        backdrop-filter: blur(10px);
+        text-align: center;
+    }
+
+    .garuda-icon {
+        font-size: 45px;
+        margin-bottom: 5px;
+        line-height: 1;
     }
 
     .header-title {
@@ -58,16 +64,28 @@ custom_css = """
         font-size: 22px;
         font-weight: 800;
         text-align: center;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
         letter-spacing: 0.5px;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header-sub-badge {
+        display: inline-block;
+        background-color: #f59e0b;
+        color: #78350f;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 3px 12px;
+        border-radius: 20px;
+        margin-bottom: 12px;
+        letter-spacing: 1px;
     }
 
     .header-subtitle {
-        color: #f0fdf4;
+        color: #fef2f2;
         font-size: 13px;
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 5px;
         font-weight: 500;
     }
 
@@ -80,40 +98,40 @@ custom_css = """
     }
 
     div[data-baseweb="input"] {
-        background-color: rgba(15, 23, 42, 0.75) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        background-color: rgba(15, 23, 42, 0.8) !important;
+        border: 1px solid rgba(245, 158, 11, 0.5) !important;
         border-radius: 12px !important;
         color: #ffffff !important;
         backdrop-filter: blur(8px);
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
     }
 
     div[data-baseweb="input"]:focus-within {
-        border-color: #14b8a6 !important;
-        box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.3) !important;
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3) !important;
     }
 
-    /* TOMBOL CEK DATA */
+    /* TOMBOL CEK DATA (MERAH MERDEKA) */
     div.stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%) !important;
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
         color: #ffffff !important;
-        border: none !important;
+        border: 1px solid #f59e0b !important;
         border-radius: 12px !important;
         font-weight: 700 !important;
         padding: 12px 18px !important;
         transition: all 0.3s ease !important;
-        box-shadow: 0 6px 18px rgba(13, 148, 136, 0.4) !important;
+        box-shadow: 0 6px 18px rgba(220, 38, 38, 0.4) !important;
     }
     
     div.stButton > button[kind="primary"]:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 22px rgba(13, 148, 136, 0.5) !important;
+        box-shadow: 0 8px 22px rgba(220, 38, 38, 0.6) !important;
     }
 
     /* TOMBOL BERSIHKAN */
     div.stButton > button[kind="secondary"] {
         background: rgba(255, 255, 255, 0.12) !important;
-        color: #e2e8f0 !important;
+        color: #f1f5f9 !important;
         border: 1px solid rgba(255, 255, 255, 0.25) !important;
         border-radius: 12px !important;
         font-weight: 600 !important;
@@ -127,26 +145,26 @@ custom_css = """
         color: #ffffff !important;
     }
 
-    /* KARTU HASIL PENCARIAN (GLASSMORPHISM WHITE CARD) */
+    /* KARTU HASIL PENCARIAN (PUTIH DENGAN LIST MERAH GOLD) */
     .result-card {
         background: rgba(255, 255, 255, 0.96);
         border-radius: 20px;
         padding: 26px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         color: #0f172a;
         backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.8);
+        border: 2px solid #f59e0b;
     }
 
     .result-header {
         text-align: center;
-        border-bottom: 2px dashed #cbd5e1;
+        border-bottom: 2px dashed #fca5a5;
         padding-bottom: 15px;
         margin-bottom: 15px;
     }
 
     .result-header h3 {
-        color: #0f172a !important;
+        color: #991b1b !important;
         font-size: 19px;
         font-weight: 800;
         margin: 0;
@@ -192,6 +210,15 @@ custom_css = """
         color: #dc2626;
         font-size: 17px;
         font-weight: 800;
+    }
+
+    .bhinneka-footer {
+        text-align: center;
+        color: #cbd5e1;
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 20px;
+        letter-spacing: 1px;
     }
     </style>
 """
@@ -266,10 +293,12 @@ def vlookup_exact(df, key, col_idx):
     return ""
 
 
-# Header Utama UI
+# Header Utama UI Tematik Kemerdekaan
 st.markdown("""
 <div class="main-card">
-    <div class="header-title">📋 CEK DATA PINJAMAN KTSB MNAE</div>
+    <div class="garuda-icon">🦅</div>
+    <div class="header-sub-badge">HUT RI KE-81 • BHINNEKA TUNGGAL IKA</div>
+    <div class="header-title">CEK DATA PINJAMAN KTSB MNAE</div>
     <div class="header-subtitle">🔒 Demi privasi, pastikan klik 'Tutup / Bersihkan' setelah selesai.</div>
 </div>
 """, unsafe_allow_html=True)
@@ -348,7 +377,7 @@ if st.session_state.get("search_result"):
         </div>
         <div class="table-row">
             <span class="table-label">NAMA</span>
-            <span class="table-value" style="color: #0284c7;">{res['nama']}</span>
+            <span class="table-value" style="color: #b91c1c;">{res['nama']}</span>
         </div>
         <div class="table-row">
             <span class="table-label">SIMPANAN POKOK</span>
@@ -379,3 +408,5 @@ if st.session_state.get("search_result"):
     st.markdown(kartu_html, unsafe_allow_html=True)
 elif not cek_clicked and s1 is not None:
     st.info("💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' untuk melihat informasi.")
+
+st.markdown('<div class="bhinneka-footer">🇮🇩 BHINNEKA TUNGGAL IKA • KOPERASI UNTUK NEGERI 🇮🇩</div>', unsafe_allow_html=True)
