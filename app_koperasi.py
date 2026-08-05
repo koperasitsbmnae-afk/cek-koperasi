@@ -13,7 +13,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. Custom CSS UI Modern, Glassmorphism & Background Keuangan Elegan
+# 2. Custom CSS UI Asli dengan Background Kebudayaan Indonesia
 custom_css = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -31,26 +31,25 @@ custom_css = """
         opacity: 1 !important;
     }
 
-    /* BACKGROUND TEMA KEUANGAN & KOPERASI MODERN (NON-CANDLESTICK) */
+    /* BACKGROUND LUAR: KEBUDAYAAN INDONESIA (Indonesian_Culture.jpg) */
     .stApp {
-        background: linear-gradient(rgba(10, 25, 47, 0.82), rgba(15, 23, 42, 0.90)), 
-                    url('https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=1920&auto=format&fit=crop');
+        background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), 
+                    url('https://upload.wikimedia.org/wikipedia/commons/2/22/Indonesian_Culture.jpg');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    /* KOTAK JUDUL UTAMA - GRADASI TEAL/BLUE DENGAN EFEK GLOW */
+    /* KOTAK JUDUL UTAMA ASLI */
     .main-card {
-        background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
-        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 20px;
         padding: 25px;
-        box-shadow: 0 12px 35px rgba(13, 148, 136, 0.35);
+        box-shadow: 0 10px 30px rgba(0, 180, 219, 0.3);
         margin-top: 10px;
         margin-bottom: 25px;
-        backdrop-filter: blur(10px);
     }
 
     .header-title {
@@ -60,18 +59,18 @@ custom_css = """
         text-align: center;
         margin-bottom: 6px;
         letter-spacing: 0.5px;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.15);
     }
 
     .header-subtitle {
-        color: #f0fdf4;
+        color: #e0f2fe;
         font-size: 13px;
         text-align: center;
         margin-bottom: 20px;
         font-weight: 500;
     }
 
-    /* LABELS & INPUT FIELD */
+    /* TEKS & INPUT FIELD ASLI */
     div[data-testid="stWidgetLabel"] label, p {
         color: #ffffff !important;
         font-weight: 700 !important;
@@ -80,74 +79,71 @@ custom_css = """
     }
 
     div[data-baseweb="input"] {
-        background-color: rgba(15, 23, 42, 0.75) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        border-radius: 12px !important;
+        background-color: rgba(15, 23, 42, 0.7) !important;
+        border: 1px solid #334155 !important;
+        border-radius: 10px !important;
         color: #ffffff !important;
-        backdrop-filter: blur(8px);
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        backdrop-filter: blur(4px);
     }
 
     div[data-baseweb="input"]:focus-within {
-        border-color: #14b8a6 !important;
-        box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.3) !important;
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
     }
 
-    /* TOMBOL CEK DATA */
+    /* TOMBOL CEK DATA ASLI */
     div.stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%) !important;
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
         color: #ffffff !important;
         border: none !important;
-        border-radius: 12px !important;
-        font-weight: 700 !important;
-        padding: 12px 18px !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 6px 18px rgba(13, 148, 136, 0.4) !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        padding: 10px 16px !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
     }
     
     div.stButton > button[kind="primary"]:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 22px rgba(13, 148, 136, 0.5) !important;
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4) !important;
     }
 
-    /* TOMBOL BERSIHKAN */
+    /* TOMBOL BERSIHKAN ASLI */
     div.stButton > button[kind="secondary"] {
-        background: rgba(255, 255, 255, 0.12) !important;
-        color: #e2e8f0 !important;
-        border: 1px solid rgba(255, 255, 255, 0.25) !important;
-        border-radius: 12px !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: #cbd5e1 !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 10px !important;
         font-weight: 600 !important;
-        padding: 12px 18px !important;
-        transition: all 0.3s ease !important;
-        backdrop-filter: blur(8px);
+        padding: 10px 16px !important;
+        transition: all 0.2s ease !important;
+        backdrop-filter: blur(4px);
     }
 
     div.stButton > button[kind="secondary"]:hover {
-        background: rgba(255, 255, 255, 0.22) !important;
+        background: rgba(255, 255, 255, 0.2) !important;
         color: #ffffff !important;
     }
 
-    /* KARTU HASIL PENCARIAN (GLASSMORPHISM WHITE CARD) */
+    /* KARTU HASIL PENCARIAN ASLI (KOTAK PUTIH) */
     .result-card {
-        background: rgba(255, 255, 255, 0.96);
-        border-radius: 20px;
-        padding: 26px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        color: #0f172a;
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.8);
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        color: #1e293b;
     }
 
     .result-header {
         text-align: center;
-        border-bottom: 2px dashed #cbd5e1;
+        border-bottom: 2px dashed #e2e8f0;
         padding-bottom: 15px;
         margin-bottom: 15px;
     }
 
     .result-header h3 {
         color: #0f172a !important;
-        font-size: 19px;
+        font-size: 18px;
         font-weight: 800;
         margin: 0;
         letter-spacing: 1px;
@@ -163,7 +159,7 @@ custom_css = """
     .table-row {
         display: flex;
         justify-content: space-between;
-        padding: 11px 0;
+        padding: 10px 0;
         border-bottom: 1px solid #f1f5f9;
         font-size: 14px;
     }
@@ -182,15 +178,14 @@ custom_css = """
     .highlight-nik {
         background-color: #fef3c7;
         color: #92400e;
-        padding: 3px 10px;
+        padding: 2px 8px;
         border-radius: 6px;
         font-family: monospace;
-        font-weight: 800;
     }
 
     .highlight-sisa {
         color: #dc2626;
-        font-size: 17px;
+        font-size: 16px;
         font-weight: 800;
     }
     </style>
@@ -266,7 +261,7 @@ def vlookup_exact(df, key, col_idx):
     return ""
 
 
-# Header Utama UI
+# Header Utama UI Asli
 st.markdown("""
 <div class="main-card">
     <div class="header-title">📋 CEK DATA PINJAMAN KTSB MNAE</div>
@@ -333,7 +328,7 @@ if s1 is not None:
                     "sisa_angsuran": clean_int(vlookup_exact(s4, nik_input, 7)),
                 }
 
-# Tampilkan Kartu Hasil
+# Tampilkan Kartu Hasil Asli
 if st.session_state.get("search_result"):
     res = st.session_state["search_result"]
     kartu_html = f"""
@@ -348,7 +343,7 @@ if st.session_state.get("search_result"):
         </div>
         <div class="table-row">
             <span class="table-label">NAMA</span>
-            <span class="table-value" style="color: #0284c7;">{res['nama']}</span>
+            <span class="table-value" style="color: #2563eb;">{res['nama']}</span>
         </div>
         <div class="table-row">
             <span class="table-label">SIMPANAN POKOK</span>
