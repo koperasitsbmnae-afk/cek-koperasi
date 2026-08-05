@@ -55,17 +55,13 @@ custom_css = """
     header {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* HILANGKAN SEMUA ELEMEN INSTRUKSI DI STREAMLIT */
-    div[data-testid="stInputInstruction"],
-    div[data-testid="stInputInstruction"] *,
-    div[data-baseweb="input"] + div,
-    .stTextInput small {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        height: 0 !important;
+    /* REMOVE STYLES BORDER FORM UNTUK TAMPILAN CLEAN */
+    [data-testid="stForm"] {
+        border: none !important;
+        padding: 0 !important;
+        background: transparent !important;
     }
-    
+
     [data-testid="stStatusWidget"], .stAppDeployButton {
         transform: scale(0.75) !important;
         transform-origin: bottom right !important;
@@ -106,17 +102,14 @@ custom_css = """
         font-weight: 500;
     }
 
-    /* LABEL FIELD INPUT CUSTOM */
-    .input-label-custom {
+    /* TEKS & INPUT FIELD UTAMA */
+    div[data-testid="stWidgetLabel"] label, p {
         color: #ffffff !important;
         font-weight: 700 !important;
         font-size: 15px !important;
         letter-spacing: 0.5px !important;
-        margin-bottom: 8px;
-        display: block;
     }
 
-    /* TEKS & INPUT FIELD UTAMA */
     div[data-baseweb="input"] {
         background-color: rgba(15, 23, 42, 0.7) !important;
         border: 1px solid #334155 !important;
@@ -130,8 +123,8 @@ custom_css = """
         box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
     }
 
-    /* TOMBOL CEK DATA */
-    div.stButton > button[kind="primary"] {
+    /* TOMBOL CEK DATA (FORM SUBMIT) */
+    div.stButton > button[kind="primaryFormSubmit"] {
         background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
         color: #ffffff !important;
         border: none !important;
@@ -142,7 +135,7 @@ custom_css = """
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
     }
     
-    div.stButton > button[kind="primary"]:hover {
+    div.stButton > button[kind="primaryFormSubmit"]:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4) !important;
     }
@@ -339,9 +332,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Inisialisasi variabel default
-cek_clicked = False
-
 if s1 is not None:
     if "search_result" not in st.session_state:
         st.session_state["search_result"] = None
@@ -350,24 +340,21 @@ if s1 is not None:
         st.session_state["nik_query"] = ""
         st.session_state["search_result"] = None
 
-    # Label dibuat secara HTML manual untuk menghindari bug instruksi bawaan Streamlit
-    st.markdown('<span class="input-label-custom">MASUKKAN NIK KTP</span>', unsafe_allow_html=True)
+    # Penggunaan st.form secara otomatis menghapus petunjuk "Press Enter to apply"
+    with st.form("form_cek_nik", clear_on_submit=False):
+        nik_input = st.text_input(
+            "MASUKKAN NIK KTP",
+            placeholder="Ketik 16 digit NIK KTP...",
+            key="nik_query",
+        ).strip().replace(" ", "")
 
-    # Input dengan label_visibility="collapsed" murni menghilangkan instruksi "Press Enter to apply"
-    nik_input = st.text_input(
-        "MASUKKAN NIK KTP",
-        placeholder="Ketik 16 digit NIK KTP...",
-        key="nik_query",
-        label_visibility="collapsed"
-    ).strip().replace(" ", "")
+        st.write("")
 
-    st.write("")
-
-    col1, col2 = st.columns(2)
-    with col1:
-        cek_clicked = st.button("🔍 Cek Data", type="primary", use_container_width=True)
-    with col2:
-        st.button("🔒 Tutup / Bersihkan", type="secondary", use_container_width=True, on_click=reset_data)
+        col1, col2 = st.columns(2)
+        with col1:
+            cek_clicked = st.form_submit_button("🔍 Cek Data", type="primary", use_container_width=True)
+        with col2:
+            st.form_submit_button("🔒 Tutup / Bersihkan", type="secondary", use_container_width=True, on_click=reset_data)
 
     if cek_clicked:
         if len(nik_input) != 16 or not nik_input.isdigit():
@@ -447,5 +434,5 @@ if st.session_state.get("search_result"):
     </div>
     """
     st.markdown(kartu_html, unsafe_allow_html=True)
-elif not cek_clicked and s1 is not None:
+elif s1 is not None and not st.session_state.get("search_result"):
     st.info("💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' untuk melihat informasi.")
