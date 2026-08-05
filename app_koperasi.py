@@ -202,15 +202,13 @@ custom_css = """
 
     /* TEKS UPDATE BERGERAK HALUS */
     .result-header p.text-update {
-        color: #1e293b !important; /* Biru Tua Pekat / Gelap */
+        color: #1e293b !important;
         font-size: 16px !important;
         font-weight: 800 !important;
         margin: 4px 0 0 0 !important;
         letter-spacing: 1.5px !important;
         text-align: center !important;
         display: inline-block !important;
-        
-        /* Panggil Efek Animasi Bergerak */
         animation: pulseMove 2.2s ease-in-out infinite !important;
     }
 
@@ -283,19 +281,26 @@ def catat_log(nik, nama):
         data_baru.to_csv(FILE_LOG, mode="w", header=True, index=False)
 
 
+# PERBAIKAN: Format Rupiah dengan Pembulatan Matriks (Menangani angka desimal seperti 0.999...)
 def format_rupiah(nilai):
     try:
-        clean_val = str(nilai).replace(",", "").split(".")[0]
-        angka = int(clean_val)
+        if not nilai or str(nilai).strip().lower() in ["nan", "none", ""]:
+            return "Rp 0"
+        clean_str = str(nilai).replace(",", ".").strip()
+        angka = int(round(float(clean_str)))
         return f"Rp {angka:,}".replace(",", ".")
     except Exception:
         return "Rp 0" if str(nilai).strip() in ["", "nan", "None"] else str(nilai)
 
 
+# PERBAIKAN: Pembersihan Integer dengan Pembulatan Matriks (Menangani angka desimal seperti 0.999... -> 1)
 def clean_int(val):
     try:
-        clean_val = str(val).split(".")[0]
-        return str(int(clean_val)) if clean_val and clean_val.lower() != "nan" else "0"
+        if not val or str(val).strip().lower() in ["nan", "none", ""]:
+            return "0"
+        clean_str = str(val).replace(",", ".").strip()
+        num = float(clean_str)
+        return str(int(round(num)))
     except Exception:
         return "0"
 
@@ -313,8 +318,6 @@ def vlookup_exact(df, key, col_idx):
         if target_col < len(row):
             val = str(row.iloc[target_col]).strip()
             if val and val.lower() not in ["nan", "none"]:
-                if val.endswith(".0"):
-                    val = val[:-2]
                 return val
     return ""
 
