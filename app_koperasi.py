@@ -13,7 +13,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. Custom CSS untuk UI Modern & Responsive
+# 2. Custom CSS UI Modern, Glassmorphism & Background Keuangan Elegan
 custom_css = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -31,25 +31,26 @@ custom_css = """
         opacity: 1 !important;
     }
 
-    /* BACKGROUND BAGIAN LUAR DENGAN TEMA KEUANGAN / FINANSIAL */
+    /* BACKGROUND TEMA KEUANGAN & KOPERASI MODERN (NON-CANDLESTICK) */
     .stApp {
-        background: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.88)), 
-                    url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1920&auto=format&fit=crop');
+        background: linear-gradient(rgba(10, 25, 47, 0.82), rgba(15, 23, 42, 0.90)), 
+                    url('https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=1920&auto=format&fit=crop');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    /* KOTAK JUDUL UTAMA - BIRU LANGIT CERAH */
+    /* KOTAK JUDUL UTAMA - GRADASI TEAL/BLUE DENGAN EFEK GLOW */
     .main-card {
-        background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
         border-radius: 20px;
         padding: 25px;
-        box-shadow: 0 10px 30px rgba(0, 180, 219, 0.3);
+        box-shadow: 0 12px 35px rgba(13, 148, 136, 0.35);
         margin-top: 10px;
         margin-bottom: 25px;
+        backdrop-filter: blur(10px);
     }
 
     .header-title {
@@ -59,18 +60,18 @@ custom_css = """
         text-align: center;
         margin-bottom: 6px;
         letter-spacing: 0.5px;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     .header-subtitle {
-        color: #e0f2fe;
+        color: #f0fdf4;
         font-size: 13px;
         text-align: center;
         margin-bottom: 20px;
         font-weight: 500;
     }
 
-    /* PENEGASAN TEKS LABEL 'MASUKKAN NIK KTP' */
+    /* LABELS & INPUT FIELD */
     div[data-testid="stWidgetLabel"] label, p {
         color: #ffffff !important;
         font-weight: 700 !important;
@@ -79,68 +80,74 @@ custom_css = """
     }
 
     div[data-baseweb="input"] {
-        background-color: rgba(15, 23, 42, 0.7) !important;
-        border: 1px solid #334155 !important;
-        border-radius: 10px !important;
+        background-color: rgba(15, 23, 42, 0.75) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 12px !important;
         color: #ffffff !important;
-        backdrop-filter: blur(4px);
+        backdrop-filter: blur(8px);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
     }
 
     div[data-baseweb="input"]:focus-within {
-        border-color: #3b82f6 !important;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+        border-color: #14b8a6 !important;
+        box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.3) !important;
     }
 
+    /* TOMBOL CEK DATA */
     div.stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+        background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%) !important;
         color: #ffffff !important;
         border: none !important;
-        border-radius: 10px !important;
-        font-weight: 600 !important;
-        padding: 10px 16px !important;
-        transition: all 0.2s ease !important;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        padding: 12px 18px !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 6px 18px rgba(13, 148, 136, 0.4) !important;
     }
     
     div.stButton > button[kind="primary"]:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4) !important;
+        box-shadow: 0 8px 22px rgba(13, 148, 136, 0.5) !important;
     }
 
+    /* TOMBOL BERSIHKAN */
     div.stButton > button[kind="secondary"] {
-        background: rgba(255, 255, 255, 0.1) !important;
-        color: #cbd5e1 !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        border-radius: 10px !important;
+        background: rgba(255, 255, 255, 0.12) !important;
+        color: #e2e8f0 !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        border-radius: 12px !important;
         font-weight: 600 !important;
-        padding: 10px 16px !important;
-        transition: all 0.2s ease !important;
-        backdrop-filter: blur(4px);
+        padding: 12px 18px !important;
+        transition: all 0.3s ease !important;
+        backdrop-filter: blur(8px);
     }
 
     div.stButton > button[kind="secondary"]:hover {
-        background: rgba(255, 255, 255, 0.2) !important;
+        background: rgba(255, 255, 255, 0.22) !important;
         color: #ffffff !important;
     }
 
+    /* KARTU HASIL PENCARIAN (GLASSMORPHISM WHITE CARD) */
     .result-card {
-        background: #ffffff;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-        color: #1e293b;
+        background: rgba(255, 255, 255, 0.96);
+        border-radius: 20px;
+        padding: 26px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        color: #0f172a;
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
     }
 
     .result-header {
         text-align: center;
-        border-bottom: 2px dashed #e2e8f0;
+        border-bottom: 2px dashed #cbd5e1;
         padding-bottom: 15px;
         margin-bottom: 15px;
     }
 
     .result-header h3 {
         color: #0f172a !important;
-        font-size: 18px;
+        font-size: 19px;
         font-weight: 800;
         margin: 0;
         letter-spacing: 1px;
@@ -156,7 +163,7 @@ custom_css = """
     .table-row {
         display: flex;
         justify-content: space-between;
-        padding: 10px 0;
+        padding: 11px 0;
         border-bottom: 1px solid #f1f5f9;
         font-size: 14px;
     }
@@ -175,14 +182,15 @@ custom_css = """
     .highlight-nik {
         background-color: #fef3c7;
         color: #92400e;
-        padding: 2px 8px;
+        padding: 3px 10px;
         border-radius: 6px;
         font-family: monospace;
+        font-weight: 800;
     }
 
     .highlight-sisa {
         color: #dc2626;
-        font-size: 16px;
+        font-size: 17px;
         font-weight: 800;
     }
     </style>
@@ -340,7 +348,7 @@ if st.session_state.get("search_result"):
         </div>
         <div class="table-row">
             <span class="table-label">NAMA</span>
-            <span class="table-value" style="color: #2563eb;">{res['nama']}</span>
+            <span class="table-value" style="color: #0284c7;">{res['nama']}</span>
         </div>
         <div class="table-row">
             <span class="table-label">SIMPANAN POKOK</span>
