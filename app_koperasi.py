@@ -185,32 +185,32 @@ custom_css = """
         text-align: center;
     }
 
-    /* ANIMASI BERNAFAS & RGB PADA TEKS UPDATE JULI 2026 */
-    @keyframes rgbBreathing {
+    /* ANIMASI BERNAFAS & RGB WARNA PEKAT UNTUK BACKGROUND PUTIH */
+    @keyframes rgbBreathingDark {
         0% {
-            color: #ef4444 !important; /* Merah */
+            color: #dc2626 !important; /* Merah Pekat */
             transform: scale(1);
-            text-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+            text-shadow: 0 0 4px rgba(220, 38, 38, 0.2);
         }
         25% {
-            color: #8b5cf6 !important; /* Ungu */
+            color: #7c3aed !important; /* Ungu Pekat */
             transform: scale(1.03);
-            text-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+            text-shadow: 0 0 6px rgba(124, 58, 237, 0.3);
         }
         50% {
-            color: #2563eb !important; /* Biru */
+            color: #1d4ed8 !important; /* Biru Pekat */
             transform: scale(1);
-            text-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+            text-shadow: 0 0 4px rgba(29, 78, 216, 0.2);
         }
         75% {
-            color: #10b981 !important; /* Hijau / Cyan */
+            color: #059669 !important; /* Hijau Pekat */
             transform: scale(1.03);
-            text-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+            text-shadow: 0 0 6px rgba(5, 150, 105, 0.3);
         }
         100% {
-            color: #ef4444 !important; /* Kembali ke Merah */
+            color: #dc2626 !important; /* Kembali ke Merah */
             transform: scale(1);
-            text-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+            text-shadow: 0 0 4px rgba(220, 38, 38, 0.2);
         }
     }
 
@@ -222,8 +222,8 @@ custom_css = """
         text-align: center;
         display: inline-block;
         
-        /* Panggil Animasi RGB Breathing secara berulang (infinite) */
-        animation: rgbBreathing 3.5s ease-in-out infinite;
+        /* Panggil Animasi RGB Warna Pekat */
+        animation: rgbBreathingDark 3.5s ease-in-out infinite !important;
     }
 
     .table-row {
