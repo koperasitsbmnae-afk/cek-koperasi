@@ -171,7 +171,7 @@ custom_css = """
         margin-bottom: 15px;
     }
 
-    /* Sembunyikan ikon link Streamlit agar judul benar-benar di tengah */
+    /* Sembunyikan ikon link Streamlit */
     .result-header h3 a {
         display: none !important;
     }
@@ -185,14 +185,45 @@ custom_css = """
         text-align: center;
     }
 
-    /* Teks subtitle disamakan ukuran dan jenis font-nya */
+    /* ANIMASI BERNAFAS & RGB PADA TEKS UPDATE JULI 2026 */
+    @keyframes rgbBreathing {
+        0% {
+            color: #ef4444 !important; /* Merah */
+            transform: scale(1);
+            text-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+        }
+        25% {
+            color: #8b5cf6 !important; /* Ungu */
+            transform: scale(1.03);
+            text-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+        }
+        50% {
+            color: #2563eb !important; /* Biru */
+            transform: scale(1);
+            text-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+        }
+        75% {
+            color: #10b981 !important; /* Hijau / Cyan */
+            transform: scale(1.03);
+            text-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+        }
+        100% {
+            color: #ef4444 !important; /* Kembali ke Merah */
+            transform: scale(1);
+            text-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+        }
+    }
+
     .result-header p {
-        color: #0f172a !important;
         font-size: 18px !important;
         font-weight: 800 !important;
         margin: 6px 0 0 0;
         letter-spacing: 1px;
         text-align: center;
+        display: inline-block;
+        
+        /* Panggil Animasi RGB Breathing secara berulang (infinite) */
+        animation: rgbBreathing 3.5s ease-in-out infinite;
     }
 
     .table-row {
