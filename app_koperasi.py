@@ -55,13 +55,22 @@ custom_css = """
     header {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* REMOVE STYLES BORDER FORM UNTUK TAMPILAN CLEAN */
-    [data-testid="stForm"] {
-        border: none !important;
-        padding: 0 !important;
-        background: transparent !important;
+    /* TOTAL HIDE SEMUA BENTUK 'PRESS ENTER TO APPLY' ATAU INSTRUKSI INPUT STREAMLIT */
+    div[data-testid="stInputInstruction"],
+    div[data-testid="stInputInstruction"] *,
+    div[data-testid="stTextInput"] div[data-testid="stInputInstruction"],
+    div[data-baseweb="input"] + div,
+    .stTextInput small,
+    [data-testid="stTextInput"] small {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        position: absolute !important;
+        pointer-events: none !important;
     }
-
+    
     [data-testid="stStatusWidget"], .stAppDeployButton {
         transform: scale(0.75) !important;
         transform-origin: bottom right !important;
@@ -123,8 +132,8 @@ custom_css = """
         box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
     }
 
-    /* TOMBOL CEK DATA (FORM SUBMIT) */
-    div.stButton > button[kind="primaryFormSubmit"] {
+    /* TOMBOL CEK DATA */
+    div.stButton > button[kind="primary"] {
         background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
         color: #ffffff !important;
         border: none !important;
@@ -135,7 +144,7 @@ custom_css = """
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
     }
     
-    div.stButton > button[kind="primaryFormSubmit"]:hover {
+    div.stButton > button[kind="primary"]:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4) !important;
     }
@@ -332,6 +341,9 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# Inisialisasi variabel default
+cek_clicked = False
+
 if s1 is not None:
     if "search_result" not in st.session_state:
         st.session_state["search_result"] = None
@@ -340,21 +352,19 @@ if s1 is not None:
         st.session_state["nik_query"] = ""
         st.session_state["search_result"] = None
 
-    # Penggunaan st.form secara otomatis menghapus petunjuk "Press Enter to apply"
-    with st.form("form_cek_nik", clear_on_submit=False):
-        nik_input = st.text_input(
-            "MASUKKAN NIK KTP",
-            placeholder="Ketik 16 digit NIK KTP...",
-            key="nik_query",
-        ).strip().replace(" ", "")
+    nik_input = st.text_input(
+        "MASUKKAN NIK KTP",
+        placeholder="Ketik 16 digit NIK KTP...",
+        key="nik_query",
+    ).strip().replace(" ", "")
 
-        st.write("")
+    st.write("")
 
-        col1, col2 = st.columns(2)
-        with col1:
-            cek_clicked = st.form_submit_button("🔍 Cek Data", type="primary", use_container_width=True)
-        with col2:
-            st.form_submit_button("🔒 Tutup / Bersihkan", type="secondary", use_container_width=True, on_click=reset_data)
+    col1, col2 = st.columns(2)
+    with col1:
+        cek_clicked = st.button("🔍 Cek Data", type="primary", use_container_width=True)
+    with col2:
+        st.button("🔒 Tutup / Bersihkan", type="secondary", use_container_width=True, on_click=reset_data)
 
     if cek_clicked:
         if len(nik_input) != 16 or not nik_input.isdigit():
@@ -434,5 +444,5 @@ if st.session_state.get("search_result"):
     </div>
     """
     st.markdown(kartu_html, unsafe_allow_html=True)
-elif s1 is not None and not st.session_state.get("search_result"):
+elif not cek_clicked and s1 is not None:
     st.info("💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' untuk melihat informasi.")
