@@ -55,13 +55,20 @@ custom_css = """
     header {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* HILANGKAN TEKS 'PRESS ENTER TO APPLY' DAN INSTRUKSI INPUT */
+    /* TOTAL HIDE SEMUA BENTUK 'PRESS ENTER TO APPLY' ATAU INSTRUKSI INPUT STREAMLIT */
     div[data-testid="stInputInstruction"],
-    div[data-testid="stTextInput"] small,
-    .stTextInput small {
+    div[data-testid="stInputInstruction"] *,
+    div[data-testid="stTextInput"] div[data-testid="stInputInstruction"],
+    div[data-baseweb="input"] + div,
+    .stTextInput small,
+    [data-testid="stTextInput"] small {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        position: absolute !important;
+        pointer-events: none !important;
     }
     
     [data-testid="stStatusWidget"], .stAppDeployButton {
