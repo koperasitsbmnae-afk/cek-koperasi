@@ -55,20 +55,15 @@ custom_css = """
     header {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* TOTAL HIDE SEMUA BENTUK 'PRESS ENTER TO APPLY' ATAU INSTRUKSI INPUT STREAMLIT */
+    /* HILANGKAN SEMUA ELEMEN INSTRUKSI DI STREAMLIT */
     div[data-testid="stInputInstruction"],
     div[data-testid="stInputInstruction"] *,
-    div[data-testid="stTextInput"] div[data-testid="stInputInstruction"],
     div[data-baseweb="input"] + div,
-    .stTextInput small,
-    [data-testid="stTextInput"] small {
+    .stTextInput small {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
         height: 0 !important;
-        width: 0 !important;
-        position: absolute !important;
-        pointer-events: none !important;
     }
     
     [data-testid="stStatusWidget"], .stAppDeployButton {
@@ -111,14 +106,17 @@ custom_css = """
         font-weight: 500;
     }
 
-    /* TEKS & INPUT FIELD UTAMA */
-    div[data-testid="stWidgetLabel"] label, p {
+    /* LABEL FIELD INPUT CUSTOM */
+    .input-label-custom {
         color: #ffffff !important;
         font-weight: 700 !important;
         font-size: 15px !important;
         letter-spacing: 0.5px !important;
+        margin-bottom: 8px;
+        display: block;
     }
 
+    /* TEKS & INPUT FIELD UTAMA */
     div[data-baseweb="input"] {
         background-color: rgba(15, 23, 42, 0.7) !important;
         border: 1px solid #334155 !important;
@@ -352,10 +350,15 @@ if s1 is not None:
         st.session_state["nik_query"] = ""
         st.session_state["search_result"] = None
 
+    # Label dibuat secara HTML manual untuk menghindari bug instruksi bawaan Streamlit
+    st.markdown('<span class="input-label-custom">MASUKKAN NIK KTP</span>', unsafe_allow_html=True)
+
+    # Input dengan label_visibility="collapsed" murni menghilangkan instruksi "Press Enter to apply"
     nik_input = st.text_input(
         "MASUKKAN NIK KTP",
         placeholder="Ketik 16 digit NIK KTP...",
         key="nik_query",
+        label_visibility="collapsed"
     ).strip().replace(" ", "")
 
     st.write("")
