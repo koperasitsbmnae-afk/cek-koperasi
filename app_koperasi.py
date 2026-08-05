@@ -171,19 +171,28 @@ custom_css = """
         margin-bottom: 15px;
     }
 
+    /* Sembunyikan ikon link Streamlit agar judul benar-benar di tengah */
+    .result-header h3 a {
+        display: none !important;
+    }
+
     .result-header h3 {
         color: #0f172a !important;
         font-size: 18px;
         font-weight: 800;
         margin: 0;
         letter-spacing: 1px;
+        text-align: center;
     }
 
+    /* Teks subtitle disamakan ukuran dan jenis font-nya */
     .result-header p {
-        color: #64748b !important;
-        font-size: 11px !important;
-        margin: 4px 0 0 0;
-        font-weight: 600 !important;
+        color: #0f172a !important;
+        font-size: 18px !important;
+        font-weight: 800 !important;
+        margin: 6px 0 0 0;
+        letter-spacing: 1px;
+        text-align: center;
     }
 
     .table-row {
@@ -227,7 +236,7 @@ FILE_EXCEL = "DATA KOPERASI.xlsx"
 FILE_LOG = "log_akses_nik.csv"
 
 # Teks Keterangan Update Data
-TEKS_UPDATE_DATA = "KTSB MNAE UPDATE JULI 2026"
+TEKS_UPDATE_DATA = "UPDATE JULI 2026"
 
 
 @st.cache_data(ttl=60)
