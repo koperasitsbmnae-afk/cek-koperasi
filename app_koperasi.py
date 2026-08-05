@@ -31,8 +31,13 @@ custom_css = """
         opacity: 1 !important;
     }
 
+    /* BACKGROUND BAGIAN LUAR DENGAN TEMA KEUANGAN / FINANSIAL */
     .stApp {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        background: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.88)), 
+                    url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1920&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
@@ -74,10 +79,11 @@ custom_css = """
     }
 
     div[data-baseweb="input"] {
-        background-color: rgba(15, 23, 42, 0.6) !important;
+        background-color: rgba(15, 23, 42, 0.7) !important;
         border: 1px solid #334155 !important;
         border-radius: 10px !important;
         color: #ffffff !important;
+        backdrop-filter: blur(4px);
     }
 
     div[data-baseweb="input"]:focus-within {
@@ -102,17 +108,18 @@ custom_css = """
     }
 
     div.stButton > button[kind="secondary"] {
-        background: rgba(255, 255, 255, 0.05) !important;
+        background: rgba(255, 255, 255, 0.1) !important;
         color: #cbd5e1 !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
         border-radius: 10px !important;
         font-weight: 600 !important;
         padding: 10px 16px !important;
         transition: all 0.2s ease !important;
+        backdrop-filter: blur(4px);
     }
 
     div.stButton > button[kind="secondary"]:hover {
-        background: rgba(255, 255, 255, 0.1) !important;
+        background: rgba(255, 255, 255, 0.2) !important;
         color: #ffffff !important;
     }
 
@@ -120,7 +127,7 @@ custom_css = """
         background: #ffffff;
         border-radius: 16px;
         padding: 24px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         color: #1e293b;
     }
 
@@ -182,7 +189,7 @@ custom_css = """
 """
 st.markdown(custom_css, unsafe_allow_html=True)
 
-# Nama File Excel Utama & Log (SUDAH DISESUAIKAN DENGAN NAMA FILE BARU)
+# Nama File Excel Utama & Log
 FILE_EXCEL = "DATA KOPERASI.xlsx"
 FILE_LOG = "log_akses_nik.csv"
 
@@ -190,7 +197,7 @@ FILE_LOG = "log_akses_nik.csv"
 TEKS_UPDATE_DATA = "KTSB MNAE UPDATE JULI 2026"
 
 
-@st.cache_data
+@st.cache_data(ttl=60)
 def load_sheets_raw():
     try:
         excel_file = pd.ExcelFile(FILE_EXCEL, engine="openpyxl")
@@ -259,7 +266,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Inisialisasi variabel default agar aman dari NameError jika file gagal dimuat
+# Inisialisasi variabel default
 cek_clicked = False
 
 if s1 is not None:
