@@ -182,8 +182,8 @@ custom_css = """
 """
 st.markdown(custom_css, unsafe_allow_html=True)
 
-# Nama File Excel Utama & Log
-FILE_EXCEL = "KOPERASI JULI 26.xlsx"
+# Nama File Excel Utama & Log (SUDAH DISESUAIKAN DENGAN NAMA FILE BARU)
+FILE_EXCEL = "DATA KOPERASI.xlsx"
 FILE_LOG = "log_akses_nik.csv"
 
 # Teks Keterangan Update Data
@@ -258,6 +258,9 @@ st.markdown("""
     <div class="header-subtitle">🔒 Demi privasi, pastikan klik 'Tutup / Bersihkan' setelah selesai.</div>
 </div>
 """, unsafe_allow_html=True)
+
+# Inisialisasi variabel default agar aman dari NameError jika file gagal dimuat
+cek_clicked = False
 
 if s1 is not None:
     if "search_result" not in st.session_state:
@@ -359,5 +362,5 @@ if st.session_state.get("search_result"):
     </div>
     """
     st.markdown(kartu_html, unsafe_allow_html=True)
-elif not cek_clicked:
+elif not cek_clicked and s1 is not None:
     st.info("💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' untuk melihat informasi.")
