@@ -100,7 +100,7 @@ custom_css = """
         font-weight: 500;
     }
 
-    /* TEKS & INPUT FIELD */
+    /* TEKS & INPUT FIELD UTAMA */
     div[data-testid="stWidgetLabel"] label, p {
         color: #ffffff !important;
         font-weight: 700 !important;
@@ -179,58 +179,19 @@ custom_css = """
         color: #0f172a !important;
         font-size: 18px;
         font-weight: 800;
-        margin: 0 0 10px 0;
+        margin: 0 0 6px 0;
         letter-spacing: 1px;
         text-align: center;
     }
 
-    /* ANIMASI GLOW & RGB UNTUK KOTAK HITAM */
-    @keyframes rgbGlowBox {
-        0% {
-            color: #ff4d4d !important;
-            border-color: #ff4d4d !important;
-            box-shadow: 0 0 12px rgba(255, 77, 77, 0.5);
-        }
-        25% {
-            color: #a855f7 !important;
-            border-color: #a855f7 !important;
-            box-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
-        }
-        50% {
-            color: #38bdf8 !important;
-            border-color: #38bdf8 !important;
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
-        }
-        75% {
-            color: #34d399 !important;
-            border-color: #34d399 !important;
-            box-shadow: 0 0 12px rgba(52, 211, 153, 0.5);
-        }
-        100% {
-            color: #ff4d4d !important;
-            border-color: #ff4d4d !important;
-            box-shadow: 0 0 12px rgba(255, 77, 77, 0.5);
-        }
-    }
-
-    /* BINGKAI HITAM KHUSUS TEKS UPDATE */
-    .update-box {
-        background-color: #0f172a !important; /* Latar Belakang Gelap / Hitam */
-        border: 2px solid #38bdf8;
-        border-radius: 12px;
-        padding: 8px 20px;
-        display: inline-block;
-        margin-top: 5px;
-        animation: rgbGlowBox 3.5s ease-in-out infinite !important;
-    }
-
-    .update-box p {
+    /* KUNCI TEKS UPDATE AGAR GELAP PEKAT DAN JELAS */
+    .result-header p.text-update {
+        color: #1e293b !important; /* Warna Gelap Pekat */
         font-size: 16px !important;
         font-weight: 800 !important;
         margin: 0 !important;
         letter-spacing: 1.5px !important;
         text-align: center !important;
-        color: inherit !important;
     }
 
     .table-row {
@@ -412,9 +373,7 @@ if st.session_state.get("search_result"):
     <div class="result-card">
         <div class="result-header">
             <h3>DATA PINJAMAN ANDA</h3>
-            <div class="update-box">
-                <p>{TEKS_UPDATE_DATA}</p>
-            </div>
+            <p class="text-update">{TEKS_UPDATE_DATA}</p>
         </div>
         <div class="table-row">
             <span class="table-label">NIK</span>
