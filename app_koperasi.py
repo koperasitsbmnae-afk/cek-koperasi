@@ -117,6 +117,28 @@ custom_css = """
         color: #ffffff !important;
     }
 
+    /* CSS Tombol Tutup/Bersihkan (Biru Langit Gradient) */
+    div[data-testid="stFormSubmitButton"] button[kind="secondaryFormSubmit"],
+    button[data-testid="baseButton-secondaryFormSubmit"],
+    button[kind="secondary"] {
+        background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        font-weight: 700 !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 12px rgba(0, 180, 219, 0.3) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    div[data-testid="stFormSubmitButton"] button[kind="secondaryFormSubmit"]:hover,
+    button[data-testid="baseButton-secondaryFormSubmit"]:hover,
+    button[kind="secondary"]:hover {
+        background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%) !important;
+        border-color: #ffffff !important;
+        box-shadow: 0 6px 16px rgba(0, 180, 219, 0.5) !important;
+        transform: translateY(-1px) !important;
+    }
+
     .result-card {
         background: #ffffff;
         border-radius: 16px;
@@ -187,7 +209,6 @@ TEKS_UPDATE_DATA = "PERIODE JULI 2026"
 def load_sheets_raw():
     try:
         excel_file = pd.ExcelFile(FILE_EXCEL, engine="openpyxl")
-        # header=None agar indeks kolom tepat sesuai urutan A=0, B=1, C=2 dst.
         s1 = pd.read_excel(excel_file, sheet_name="sheet 1", header=None, dtype=str)
         s2 = pd.read_excel(excel_file, sheet_name="sheet 2", header=None, dtype=str)
         s4 = pd.read_excel(excel_file, sheet_name="sheet 4", header=None, dtype=str)
@@ -230,7 +251,6 @@ def vlookup_exact(df, key, col_idx):
     if df is None or df.empty:
         return ""
     target_col = col_idx - 1
-    # Cari NIK spesifik di Kolom A (indeks 0)
     matched_rows = df[df[0].astype(str).str.strip() == key]
     if not matched_rows.empty:
         row = matched_rows.iloc[0]
@@ -244,9 +264,7 @@ def get_all_loans(df_s4, key):
     if df_s4 is None or df_s4.empty:
         return []
     
-    # Filter pencarian NIK pada Kolom A (indeks 0)
     matched_rows = df_s4[df_s4[0].astype(str).str.strip() == key]
-    
     loans = []
     for _, row in matched_rows.iterrows():
         def get_val(col_idx):
@@ -258,14 +276,14 @@ def get_all_loans(df_s4, key):
             return "0"
 
         loans.append({
-            "hutang_raw": get_val(10),        # Kolom J (10): PINJAMAN POKOK
+            "hutang_raw": get_val(10),        # Kolom J: PINJAMAN POKOK
             "hutang": format_rupiah(get_val(10)),
-            "sisa_hutang_raw": get_val(3),    # Kolom C (3): SISA HUTANG
+            "sisa_hutang_raw": get_val(3),    # Kolom C: SISA HUTANG
             "sisa_hutang": format_rupiah(get_val(3)),
-            "cicilan": format_rupiah(get_val(4)), # Kolom D (4): CICILAN PER BULAN
-            "tenor": clean_int(get_val(5)),   # Kolom E (5): TENOR PINJAMAN
-            "angsuran_ke": clean_int(get_val(6)), # Kolom F (6): ANGSURAN KE
-            "sisa_angsuran": clean_int(get_val(7)), # Kolom G (7): SISA ANGSURAN
+            "cicilan": format_rupiah(get_val(4)), # Kolom D: CICILAN PER BULAN
+            "tenor": clean_int(get_val(5)),   # Kolom E: TENOR
+            "angsuran_ke": clean_int(get_val(6)), # Kolom F: ANGSURAN KE
+            "sisa_angsuran": clean_int(get_val(7)), # Kolom G: SISA ANGSURAN
         })
     return loans
 
@@ -336,7 +354,7 @@ if st.session_state.get("search_result"):
     if total_pinjaman_count == 0:
         st.warning("⚠️ Data identitas ditemukan, tetapi tidak ada catatan pinjaman aktif.")
     else:
-        # Ringkasan Total jika Anggota Punya > 1 Pinjaman
+        # Ringkasan Total Multi-Pinjaman
         if total_pinjaman_count > 1:
             total_sisa_hutang_semua = 0
             total_cicilan_semua = 0
@@ -372,7 +390,7 @@ if st.session_state.get("search_result"):
             </div>
             """, unsafe_allow_html=True)
 
-        # Menampilkan Setiap Kartu Pinjaman
+        # Kartu Detail Pinjaman
         for idx, pinjaman in enumerate(pinjaman_list, start=1):
             label_pinjaman = f"PINJAMAN KE-{idx}" if total_pinjaman_count > 1 else "DATA PINJAMAN ANDA"
             
