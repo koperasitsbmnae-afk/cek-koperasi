@@ -28,7 +28,7 @@ if os.path.exists(bg_image_path):
     <style>
     .stApp, [data-testid="stAppViewContainer"] {{
         background-image: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), 
-                          url("data:image/jpeg;base64,{encoded_bg}") !important;
+                            url("data:image/jpeg;base64,{encoded_bg}") !important;
         background-size: cover !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
@@ -352,93 +352,104 @@ if st.session_state.get("search_result"):
     total_pinjaman_count = len(pinjaman_list)
 
     if total_pinjaman_count == 0:
-        st.warning("⚠️ Data identitas ditemukan, tetapi tidak ada catatan pinjaman aktif.")
-    else:
-        # Ringkasan Total Multi-Pinjaman
-        if total_pinjaman_count > 1:
-            total_sisa_hutang_semua = 0
-            total_cicilan_semua = 0
-            for p in pinjaman_list:
-                try:
-                    total_sisa_hutang_semua += int(round(float(p['sisa_hutang_raw'].replace(",", "."))))
-                except:
-                    pass
-                try:
-                    cicilan_clean = p['cicilan'].replace("Rp", "").replace(".", "").strip()
-                    total_cicilan_semua += int(cicilan_clean)
-                except:
-                    pass
-            
-            st.markdown(f"""
-            <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
-                        border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; 
-                        margin-bottom: 20px; text-align: center; color: white;">
-                <div style="font-size: 13px; color: #94a3b8; font-weight: 700; letter-spacing: 1px;">RINGKASAN ANGGOTA ({total_pinjaman_count} PINJAMAN AKTIF)</div>
-                <div style="font-size: 20px; font-weight: 800; color: #60a5fa; margin-top: 4px;">{res['nama']}</div>
-                <div style="font-size: 13px; color: #cbd5e1; margin-top: 2px;">SIMPANAN POKOK: <strong>{res['simpanan_pokok']}</strong></div>
-                <hr style="border-color: #334155; margin: 12px 0;">
-                <div style="display: flex; justify-content: space-around;">
-                    <div>
-                        <div style="font-size: 12px; color: #cbd5e1;">TOTAL CICILAN / BULAN</div>
-                        <div style="font-size: 16px; font-weight: 800; color: #facc15;">{format_rupiah(total_cicilan_semua)}</div>
-                    </div>
-                    <div>
-                        <div style="font-size: 12px; color: #cbd5e1;">TOTAL SISA HUTANG</div>
-                        <div style="font-size: 18px; font-weight: 800; color: #ef4444;">{format_rupiah(total_sisa_hutang_semua)}</div>
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+        # Jika tidak ada pinjaman aktif, buat data default agar kartu tetap tampil
+        pinjaman_list = [{
+            "hutang": "Rp 0",
+            "sisa_hutang_raw": "0",
+            "sisa_hutang": "Rp 0",
+            "cicilan": "Rp 0",
+            "tenor": "-",
+            "angsuran_ke": "-",
+            "sisa_angsuran": "-"
+        }]
+        total_pinjaman_count = 1
+        st.info("ℹ️ Data identitas ditemukan, tidak ada catatan pinjaman aktif.")
 
-        # Kartu Detail Pinjaman
-        for idx, pinjaman in enumerate(pinjaman_list, start=1):
-            label_pinjaman = f"PINJAMAN KE-{idx}" if total_pinjaman_count > 1 else "DATA PINJAMAN ANDA"
-            
-            kartu_html = f"""
-            <div class="result-card">
-                <div class="result-header">
-                    <h3>{label_pinjaman}</h3>
-                    <p class="text-update">{TEKS_UPDATE_DATA}</p>
+    # Ringkasan Total Multi-Pinjaman (hanya jika > 1 pinjaman)
+    if total_pinjaman_count > 1:
+        total_sisa_hutang_semua = 0
+        total_cicilan_semua = 0
+        for p in pinjaman_list:
+            try:
+                total_sisa_hutang_semua += int(round(float(p['sisa_hutang_raw'].replace(",", "."))))
+            except:
+                pass
+            try:
+                cicilan_clean = p['cicilan'].replace("Rp", "").replace(".", "").strip()
+                total_cicilan_semua += int(cicilan_clean)
+            except:
+                pass
+        
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
+                    border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; 
+                    margin-bottom: 20px; text-align: center; color: white;">
+            <div style="font-size: 13px; color: #94a3b8; font-weight: 700; letter-spacing: 1px;">RINGKASAN ANGGOTA ({total_pinjaman_count} PINJAMAN AKTIF)</div>
+            <div style="font-size: 20px; font-weight: 800; color: #60a5fa; margin-top: 4px;">{res['nama']}</div>
+            <div style="font-size: 13px; color: #cbd5e1; margin-top: 2px;">SIMPANAN POKOK: <strong>{res['simpanan_pokok']}</strong></div>
+            <hr style="border-color: #334155; margin: 12px 0;">
+            <div style="display: flex; justify-content: space-around;">
+                <div>
+                    <div style="font-size: 12px; color: #cbd5e1;">TOTAL CICILAN / BULAN</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #facc15;">{format_rupiah(total_cicilan_semua)}</div>
                 </div>
-                <div class="table-row">
-                    <span class="table-label">NIK</span>
-                    <span class="table-value highlight-nik">{res['nik']}</span>
-                </div>
-                <div class="table-row">
-                    <span class="table-label">NAMA</span>
-                    <span class="table-value" style="color: #2563eb;">{res['nama']}</span>
-                </div>
-                <div class="table-row">
-                    <span class="table-label">SIMPANAN POKOK</span>
-                    <span class="table-value">{res['simpanan_pokok']}</span>
-                </div>
-                <div class="table-row">
-                    <span class="table-label">HUTANG</span>
-                    <span class="table-value">{pinjaman['hutang']}</span>
-                </div>
-                <div class="table-row">
-                    <span class="table-label">CICILAN PER BULAN</span>
-                    <span class="table-value" style="color: #059669;">{pinjaman['cicilan']}</span>
-                </div>
-                <div class="table-row">
-                    <span class="table-label">TENOR PINJAMAN</span>
-                    <span class="table-value">{pinjaman['tenor']} BULAN</span>
-                </div>
-                <div class="table-row">
-                    <span class="table-label">ANGSURAN KE</span>
-                    <span class="table-value">{pinjaman['angsuran_ke']}</span>
-                </div>
-                <div class="table-row">
-                    <span class="table-label">SISA ANGSURAN</span>
-                    <span class="table-value">{pinjaman['sisa_angsuran']}</span>
-                </div>
-                <div class="table-row" style="border-bottom: none; padding-top: 15px;">
-                    <span class="table-label" style="font-size: 16px; color: #0f172a;">SISA HUTANG</span>
-                    <span class="table-value highlight-sisa">{pinjaman['sisa_hutang']}</span>
+                <div>
+                    <div style="font-size: 12px; color: #cbd5e1;">TOTAL SISA HUTANG</div>
+                    <div style="font-size: 18px; font-weight: 800; color: #ef4444;">{format_rupiah(total_sisa_hutang_semua)}</div>
                 </div>
             </div>
-            """
-            st.markdown(kartu_html, unsafe_allow_html=True)
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Kartu Detail Pinjaman
+    for idx, pinjaman in enumerate(pinjaman_list, start=1):
+        label_pinjaman = f"PINJAMAN KE-{idx}" if total_pinjaman_count > 1 else "DATA PINJAMAN ANDA"
+        
+        kartu_html = f"""
+        <div class="result-card">
+            <div class="result-header">
+                <h3>{label_pinjaman}</h3>
+                <p class="text-update">{TEKS_UPDATE_DATA}</p>
+            </div>
+            <div class="table-row">
+                <span class="table-label">NIK</span>
+                <span class="table-value highlight-nik">{res['nik']}</span>
+            </div>
+            <div class="table-row">
+                <span class="table-label">NAMA</span>
+                <span class="table-value" style="color: #2563eb;">{res['nama']}</span>
+            </div>
+            <div class="table-row">
+                <span class="table-label">SIMPANAN POKOK</span>
+                <span class="table-value">{res['simpanan_pokok']}</span>
+            </div>
+            <div class="table-row">
+                <span class="table-label">HUTANG</span>
+                <span class="table-value">{pinjaman['hutang']}</span>
+            </div>
+            <div class="table-row">
+                <span class="table-label">CICILAN PER BULAN</span>
+                <span class="table-value" style="color: #059669;">{pinjaman['cicilan']}</span>
+            </div>
+            <div class="table-row">
+                <span class="table-label">TENOR PINJAMAN</span>
+                <span class="table-value">{pinjaman['tenor']} BULAN</span>
+            </div>
+            <div class="table-row">
+                <span class="table-label">ANGSURAN KE</span>
+                <span class="table-value">{pinjaman['angsuran_ke']}</span>
+            </div>
+            <div class="table-row">
+                <span class="table-label">SISA ANGSURAN</span>
+                <span class="table-value">{pinjaman['sisa_angsuran']}</span>
+            </div>
+            <div class="table-row" style="border-bottom: none; padding-top: 15px;">
+                <span class="table-label" style="font-size: 16px; color: #0f172a;">SISA HUTANG</span>
+                <span class="table-value highlight-sisa">{pinjaman['sisa_hutang']}</span>
+            </div>
+        </div>
+        """
+        st.markdown(kartu_html, unsafe_allow_html=True)
 
 elif not st.session_state.get("search_result") and s1 is not None:
     st.info("💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' atau tekan Enter.")
