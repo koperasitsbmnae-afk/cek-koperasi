@@ -203,7 +203,7 @@ st.markdown(custom_css, unsafe_allow_html=True)
 
 FILE_EXCEL = "DATA KOPERASI.xlsx"
 FILE_LOG = "log_akses_nik.csv"
-TEKS_UPDATE_DATA = "PERIODE JULI 2026"
+TEKS_UPDATE_DATA = "PERIODE AGUSTUS 2026"
 
 @st.cache_data(ttl=60)
 def load_sheets_raw():
