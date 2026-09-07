@@ -118,21 +118,11 @@ custom_css = """
     }
 
     .stButton button {
-        background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%) !important;
-        color: #ffffff !important;
         border: 1px solid rgba(255, 255, 255, 0.3) !important;
         font-weight: 700 !important;
         border-radius: 10px !important;
-        box-shadow: 0 4px 12px rgba(0, 180, 219, 0.3) !important;
         transition: all 0.3s ease !important;
         width: 100% !important;
-    }
-
-    .stButton button:hover {
-        background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%) !important;
-        border-color: #ffffff !important;
-        box-shadow: 0 6px 16px rgba(0, 180, 219, 0.5) !important;
-        transform: translateY(-1px) !important;
     }
 
     .result-card {
@@ -310,8 +300,10 @@ if s1 is not None:
         st.write("")
         cek_clicked = st.form_submit_button("🔍 Cek Data", type="primary", use_container_width=True)
 
-    # Tombol Tutup / Bersihkan menggunakan callback untuk mereset state widget secara aman
-    st.button("🔒 Tutup / Bersihkan", on_click=reset_form_callback, use_container_width=True)
+    # Menggunakan container/kolom agar tombol Tutup/Bersihkan ukurannya sama persis (lebar penuh mengikuti form)
+    col_btn1 = st.columns(1)[0]
+    with col_btn1:
+        st.button("🔒 Tutup / Bersihkan", on_click=reset_form_callback, use_container_width=True)
 
     if cek_clicked:
         clean_nik = st.session_state.get("widget_nik_input", "").strip().replace(" ", "")
