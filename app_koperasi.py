@@ -117,16 +117,20 @@ custom_css = """
         color: #ffffff !important;
     }
 
+    /* Styling tombol agar seragam persis dengan tombol Cek Data */
+    .stButton button {
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        font-weight: 700 !important;
+        border-radius: 10px !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
+    }
+
     /* Styling khusus tombol Tutup / Bersihkan (Biru Gradient) */
     div.stButton > button {
         background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%) !important;
         color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
-        font-weight: 700 !important;
-        border-radius: 10px !important;
         box-shadow: 0 4px 12px rgba(0, 180, 219, 0.3) !important;
-        transition: all 0.3s ease !important;
-        width: 100% !important;
     }
 
     div.stButton > button:hover {
@@ -311,10 +315,8 @@ if s1 is not None:
         st.write("")
         cek_clicked = st.form_submit_button("🔍 Cek Data", type="primary", use_container_width=True)
 
-    # Menggunakan kolom agar lebar tombol Tutup/Bersihkan sama persis dengan kotak input & tombol Cek Data
-    col1, col2, col3 = st.columns([0.01, 0.98, 0.01])
-    with col2:
-        st.button("🔒 Tutup / Bersihkan", on_click=reset_form_callback, use_container_width=True)
+    # Tombol Tutup / Bersihkan diletakkan di luar form dengan lebar persis sama tanpa gangguan kolom asimetris
+    st.button("🔒 Tutup / Bersihkan", on_click=reset_form_callback, use_container_width=True)
 
     if cek_clicked:
         clean_nik = st.session_state.get("widget_nik_input", "").strip().replace(" ", "")
