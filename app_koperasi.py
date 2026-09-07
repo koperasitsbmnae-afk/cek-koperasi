@@ -118,9 +118,7 @@ custom_css = """
     }
 
     /* CSS Tombol Tutup/Bersihkan (Biru Langit Gradient) */
-    div[data-testid="stFormSubmitButton"] button[kind="secondaryFormSubmit"],
-    button[data-testid="baseButton-secondaryFormSubmit"],
-    button[kind="secondary"] {
+    .stButton button {
         background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%) !important;
         color: #ffffff !important;
         border: 1px solid rgba(255, 255, 255, 0.3) !important;
@@ -128,11 +126,10 @@ custom_css = """
         border-radius: 10px !important;
         box-shadow: 0 4px 12px rgba(0, 180, 219, 0.3) !important;
         transition: all 0.3s ease !important;
+        width: 100% !important;
     }
 
-    div[data-testid="stFormSubmitButton"] button[kind="secondaryFormSubmit"]:hover,
-    button[data-testid="baseButton-secondaryFormSubmit"]:hover,
-    button[kind="secondary"]:hover {
+    .stButton button:hover {
         background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%) !important;
         border-color: #ffffff !important;
         box-shadow: 0 6px 16px rgba(0, 180, 219, 0.5) !important;
@@ -276,14 +273,14 @@ def get_all_loans(df_s4, key):
             return "0"
 
         loans.append({
-            "hutang_raw": get_val(10),        # Kolom J: PINJAMAN POKOK
+            "hutang_raw": get_val(10),        
             "hutang": format_rupiah(get_val(10)),
-            "sisa_hutang_raw": get_val(3),    # Kolom C: SISA HUTANG
+            "sisa_hutang_raw": get_val(3),    
             "sisa_hutang": format_rupiah(get_val(3)),
-            "cicilan": format_rupiah(get_val(4)), # Kolom D: CICILAN PER BULAN
-            "tenor": clean_int(get_val(5)),   # Kolom E: TENOR
-            "angsuran_ke": clean_int(get_val(6)), # Kolom F: ANGSURAN KE
-            "sisa_angsuran": clean_int(get_val(7)), # Kolom G: SISA ANGSURAN
+            "cicilan": format_rupiah(get_val(4)), 
+            "tenor": clean_int(get_val(5)),   
+            "angsuran_ke": clean_int(get_val(6)), 
+            "sisa_angsuran": clean_int(get_val(7)), 
         })
     return loans
 
@@ -298,7 +295,7 @@ st.markdown("""
 if "search_result" not in st.session_state:
     st.session_state["search_result"] = None
 
-# Inisialisasi session state untuk input NIK agar bisa dikosongkan
+# Inisialisasi session state untuk input NIK
 if "input_nik_val" not in st.session_state:
     st.session_state["input_nik_val"] = ""
 
@@ -309,47 +306,48 @@ if s1 is not None:
             value=st.session_state["input_nik_val"],
             placeholder="Ketik 16 digit NIK KTP...",
             key="widget_nik_input"
-        ).strip().replace(" ", "")
-
+        )
+        
         st.write("")
-        col1, col2 = st.columns(2)
-        with col1:
-            cek_clicked = st.form_submit_button("🔍 Cek Data", type="primary", use_container_width=True)
-        with col2:
-            reset_clicked = st.form_submit_button("🔒 Tutup / Bersihkan", type="secondary", use_container_width=True)
+        cek_clicked = st.form_submit_button("🔍 Cek Data", type="primary", use_container_width=True)
+
+    # Tombol Tutup / Bersihkan diletakkan di luar form agar state bisa dibersihkan secara bersih
+    col_reset = st.columns(1)[0]
+    with col_reset:
+        reset_clicked = st.button("🔒 Tutup / Bersihkan", use_container_width=True)
 
     if reset_clicked:
         st.session_state["search_result"] = None
-        st.session_state["input_nik_val"] = "" # Kosongkan nilai NIK
+        st.session_state["input_nik_val"] = ""
+        st.session_state["widget_nik_input"] = ""
         st.rerun()
 
     if cek_clicked:
-        # Ambil nilai terbaru dari widget text_input
-        nik_input = st.session_state.get("widget_nik_input", "").strip().replace(" ", "")
-        st.session_state["input_nik_val"] = nik_input
+        clean_nik = st.session_state.get("widget_nik_input", "").strip().replace(" ", "")
+        st.session_state["input_nik_val"] = clean_nik
 
-        if len(nik_input) != 16 or not nik_input.isdigit():
+        if len(clean_nik) != 16 or not clean_nik.isdigit():
             st.error("❌ NIK HARUS BERISI TEPAT 16 DIGIT ANGKA!")
             st.session_state["search_result"] = None
         else:
-            nama = vlookup_exact(s1, nik_input, 2) or vlookup_exact(s4, nik_input, 2)
+            nama = vlookup_exact(s1, clean_nik, 2) or vlookup_exact(s4, clean_nik, 2)
 
             if not nama:
                 st.error("❌ DATA TIDAK DITEMUKAN / NIK SALAH")
                 st.session_state["search_result"] = None
             else:
-                catat_log(nik_input, nama)
+                catat_log(clean_nik, nama)
 
                 simpanan_pokok_raw = (
-                    vlookup_exact(s2, nik_input, 3)
-                    or vlookup_exact(s2, nik_input, 2)
+                    vlookup_exact(s2, clean_nik, 3)
+                    or vlookup_exact(s2, clean_nik, 2)
                     or "0"
                 )
                 
-                daftar_pinjaman = get_all_loans(s4, nik_input)
+                daftar_pinjaman = get_all_loans(s4, clean_nik)
 
                 st.session_state["search_result"] = {
-                    "nik": nik_input,
+                    "nik": clean_nik,
                     "nama": nama,
                     "simpanan_pokok": format_rupiah(simpanan_pokok_raw),
                     "pinjaman_list": daftar_pinjaman
@@ -427,7 +425,6 @@ if st.session_state.get("search_result"):
                 <span class="table-label">NAMA</span>
                 <span class="table-value" style="color: #2563eb;">{res['nama']}</span>
             </div>
-            <div class="type-row" style="display: none;"></div>
             <div class="table-row">
                 <span class="table-label">SIMPANAN POKOK</span>
                 <span class="table-value">{res['simpanan_pokok']}</span>
