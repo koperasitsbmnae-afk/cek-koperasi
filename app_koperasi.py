@@ -303,7 +303,6 @@ if s1 is not None:
         nik_input = st.text_input(
             "MASUKKAN NIK KTP",
             placeholder="Ketik 16 digit NIK KTP...",
-            key="nik_query",
         ).strip().replace(" ", "")
 
         st.write("")
@@ -315,7 +314,6 @@ if s1 is not None:
 
     if reset_clicked:
         st.session_state["search_result"] = None
-        st.session_state["nik_query"] = ""  # Mengosongkan input NIK
         st.rerun()
 
     if cek_clicked:
@@ -345,6 +343,7 @@ if s1 is not None:
                     "simpanan_pokok": format_rupiah(simpanan_pokok_raw),
                     "pinjaman_list": daftar_pinjaman
                 }
+        st.rerun()
 
 # Tampilkan Hasil Pencarian
 if st.session_state.get("search_result"):
