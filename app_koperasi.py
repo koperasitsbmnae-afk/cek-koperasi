@@ -117,7 +117,6 @@ custom_css = """
         color: #ffffff !important;
     }
 
-    /* CSS Tombol Tutup/Bersihkan (Biru Langit Gradient) */
     .stButton button {
         background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%) !important;
         color: #ffffff !important;
@@ -295,15 +294,14 @@ st.markdown("""
 if "search_result" not in st.session_state:
     st.session_state["search_result"] = None
 
-# Inisialisasi session state untuk input NIK
-if "input_nik_val" not in st.session_state:
-    st.session_state["input_nik_val"] = ""
+# Inisialisasi state key text_input agar aman
+if "widget_nik_input" not in st.session_state:
+    st.session_state["widget_nik_input"] = ""
 
 if s1 is not None:
     with st.form(key="search_form"):
         nik_input = st.text_input(
             "MASUKKAN NIK KTP",
-            value=st.session_state["input_nik_val"],
             placeholder="Ketik 16 digit NIK KTP...",
             key="widget_nik_input"
         )
@@ -311,20 +309,15 @@ if s1 is not None:
         st.write("")
         cek_clicked = st.form_submit_button("🔍 Cek Data", type="primary", use_container_width=True)
 
-    # Tombol Tutup / Bersihkan diletakkan di luar form agar state bisa dibersihkan secara bersih
-    col_reset = st.columns(1)[0]
-    with col_reset:
-        reset_clicked = st.button("🔒 Tutup / Bersihkan", use_container_width=True)
+    reset_clicked = st.button("🔒 Tutup / Bersihkan", use_container_width=True)
 
     if reset_clicked:
         st.session_state["search_result"] = None
-        st.session_state["input_nik_val"] = ""
         st.session_state["widget_nik_input"] = ""
         st.rerun()
 
     if cek_clicked:
         clean_nik = st.session_state.get("widget_nik_input", "").strip().replace(" ", "")
-        st.session_state["input_nik_val"] = clean_nik
 
         if len(clean_nik) != 16 or not clean_nik.isdigit():
             st.error("❌ NIK HARUS BERISI TEPAT 16 DIGIT ANGKA!")
