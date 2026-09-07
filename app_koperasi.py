@@ -311,7 +311,10 @@ if s1 is not None:
         st.write("")
         cek_clicked = st.form_submit_button("🔍 Cek Data", type="primary", use_container_width=True)
 
-    st.button("🔒 Tutup / Bersihkan", on_click=reset_form_callback, use_container_width=True)
+    # Menggunakan kolom agar lebar tombol Tutup/Bersihkan sama persis dengan kotak input & tombol Cek Data
+    col1, col2, col3 = st.columns([0.01, 0.98, 0.01])
+    with col2:
+        st.button("🔒 Tutup / Bersihkan", on_click=reset_form_callback, use_container_width=True)
 
     if cek_clicked:
         clean_nik = st.session_state.get("widget_nik_input", "").strip().replace(" ", "")
