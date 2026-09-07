@@ -315,6 +315,7 @@ if s1 is not None:
 
     if reset_clicked:
         st.session_state["search_result"] = None
+        st.session_state["nik_query"] = ""  # Mengosongkan input NIK
         st.rerun()
 
     if cek_clicked:
@@ -352,7 +353,6 @@ if st.session_state.get("search_result"):
     total_pinjaman_count = len(pinjaman_list)
 
     if total_pinjaman_count == 0:
-        # Jika tidak ada pinjaman aktif, buat data default agar kartu tetap tampil
         pinjaman_list = [{
             "hutang": "Rp 0",
             "sisa_hutang_raw": "0",
@@ -365,7 +365,6 @@ if st.session_state.get("search_result"):
         total_pinjaman_count = 1
         st.info("ℹ️ Data identitas ditemukan, tidak ada catatan pinjaman aktif.")
 
-    # Ringkasan Total Multi-Pinjaman (hanya jika > 1 pinjaman)
     if total_pinjaman_count > 1:
         total_sisa_hutang_semua = 0
         total_cicilan_semua = 0
@@ -401,7 +400,6 @@ if st.session_state.get("search_result"):
         </div>
         """, unsafe_allow_html=True)
 
-    # Kartu Detail Pinjaman
     for idx, pinjaman in enumerate(pinjaman_list, start=1):
         label_pinjaman = f"PINJAMAN KE-{idx}" if total_pinjaman_count > 1 else "DATA PINJAMAN ANDA"
         
