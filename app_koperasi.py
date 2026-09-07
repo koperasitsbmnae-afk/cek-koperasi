@@ -298,11 +298,17 @@ st.markdown("""
 if "search_result" not in st.session_state:
     st.session_state["search_result"] = None
 
+# Inisialisasi session state untuk input NIK agar bisa dikosongkan
+if "input_nik_val" not in st.session_state:
+    st.session_state["input_nik_val"] = ""
+
 if s1 is not None:
     with st.form(key="search_form"):
         nik_input = st.text_input(
             "MASUKKAN NIK KTP",
+            value=st.session_state["input_nik_val"],
             placeholder="Ketik 16 digit NIK KTP...",
+            key="widget_nik_input"
         ).strip().replace(" ", "")
 
         st.write("")
@@ -314,9 +320,14 @@ if s1 is not None:
 
     if reset_clicked:
         st.session_state["search_result"] = None
+        st.session_state["input_nik_val"] = "" # Kosongkan nilai NIK
         st.rerun()
 
     if cek_clicked:
+        # Ambil nilai terbaru dari widget text_input
+        nik_input = st.session_state.get("widget_nik_input", "").strip().replace(" ", "")
+        st.session_state["input_nik_val"] = nik_input
+
         if len(nik_input) != 16 or not nik_input.isdigit():
             st.error("❌ NIK HARUS BERISI TEPAT 16 DIGIT ANGKA!")
             st.session_state["search_result"] = None
