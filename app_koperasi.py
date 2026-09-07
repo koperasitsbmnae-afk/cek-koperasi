@@ -416,6 +416,7 @@ if st.session_state.get("search_result"):
                 <span class="table-label">NAMA</span>
                 <span class="table-value" style="color: #2563eb;">{res['nama']}</span>
             </div>
+            <div class="type-row" style="display: none;"></div>
             <div class="table-row">
                 <span class="table-label">SIMPANAN POKOK</span>
                 <span class="table-value">{res['simpanan_pokok']}</span>
