@@ -294,8 +294,9 @@ st.markdown("""
 if "search_result" not in st.session_state:
     st.session_state["search_result"] = None
 
-# Inisialisasi state key text_input agar aman
-if "widget_nik_input" not in st.session_state:
+# Fungsi Callback untuk tombol Reset / Tutup
+def reset_form_callback():
+    st.session_state["search_result"] = None
     st.session_state["widget_nik_input"] = ""
 
 if s1 is not None:
@@ -309,12 +310,8 @@ if s1 is not None:
         st.write("")
         cek_clicked = st.form_submit_button("🔍 Cek Data", type="primary", use_container_width=True)
 
-    reset_clicked = st.button("🔒 Tutup / Bersihkan", use_container_width=True)
-
-    if reset_clicked:
-        st.session_state["search_result"] = None
-        st.session_state["widget_nik_input"] = ""
-        st.rerun()
+    # Tombol Tutup / Bersihkan menggunakan callback untuk mereset state widget secara aman
+    st.button("🔒 Tutup / Bersihkan", on_click=reset_form_callback, use_container_width=True)
 
     if cek_clicked:
         clean_nik = st.session_state.get("widget_nik_input", "").strip().replace(" ", "")
