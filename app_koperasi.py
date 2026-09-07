@@ -117,8 +117,8 @@ custom_css = """
         color: #ffffff !important;
     }
 
-    /* Styling semua tombol di dalam form agar ukurannya presisi sama persis */
-    .stButton button, div[data-testid="stFormSubmitButton"] button {
+    /* Styling tombol agar seragam persis dengan tombol Cek Data */
+    .stButton button {
         border: 1px solid rgba(255, 255, 255, 0.3) !important;
         font-weight: 700 !important;
         border-radius: 10px !important;
@@ -314,14 +314,9 @@ if s1 is not None:
         
         st.write("")
         cek_clicked = st.form_submit_button("🔍 Cek Data", type="primary", use_container_width=True)
-        
-        # Tombol Tutup / Bersihkan dimasukkan ke dalam form agar lebarnya 100% presisi sama persis
-        tutup_clicked = st.form_submit_button("🔒 Tutup / Bersihkan", use_container_width=False)
 
-    # Logika aksi tombol di luar form
-    if tutup_clicked:
-        reset_form_callback()
-        st.rerun()
+    # Tombol Tutup / Bersihkan diletakkan di luar form dengan lebar persis sama tanpa gangguan kolom asimetris
+    st.button("🔒 Tutup / Bersihkan", on_click=reset_form_callback, use_container_width=True)
 
     if cek_clicked:
         clean_nik = st.session_state.get("widget_nik_input", "").strip().replace(" ", "")
