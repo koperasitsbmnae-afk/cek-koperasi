@@ -367,7 +367,7 @@ if st.session_state.get("search_result"):
         }]
         total_pinjaman_count = 1
         
-        # Kolom peringatan diubah menjadi warna merah menyala
+        # Kotak peringatan tidak ada pinjaman aktif (Warna Merah)
         st.markdown("""
         <div style="
             background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
@@ -470,4 +470,20 @@ if st.session_state.get("search_result"):
         st.markdown(kartu_html, unsafe_allow_html=True)
 
 elif not st.session_state.get("search_result") and s1 is not None:
-    st.info("💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' atau tekan Enter.")
+    # Kotak informasi awal diubah menjadi warna oranye
+    st.markdown("""
+    <div style="
+        background: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
+        border: 1px solid #fb923c;
+        border-radius: 12px;
+        padding: 14px 20px;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 15px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+        margin-bottom: 20px;
+    ">
+        💡 Masukkan 16 digit NIK KTP lalu klik 'Cek Data' atau tekan Enter.
+    </div>
+    """, unsafe_allow_html=True)
