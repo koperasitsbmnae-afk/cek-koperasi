@@ -28,7 +28,7 @@ if os.path.exists(bg_image_path):
     <style>
     .stApp, [data-testid="stAppViewContainer"] {{
         background-image: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), 
-                            url("data:image/jpeg;base64,{encoded_bg}") !important;
+                    url("data:image/jpeg;base64,{encoded_bg}") !important;
         background-size: cover !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
@@ -366,7 +366,24 @@ if st.session_state.get("search_result"):
             "sisa_angsuran": "-"
         }]
         total_pinjaman_count = 1
-        st.info("ℹ️ Data identitas ditemukan, tidak ada catatan pinjaman aktif.")
+        
+        # Kolom peringatan diubah menjadi warna merah menyala
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            border: 1px solid #ef4444;
+            border-radius: 12px;
+            padding: 14px 20px;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 15px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+            margin-bottom: 20px;
+        ">
+            ℹ️ Data identitas ditemukan, tidak ada catatan pinjaman aktif.
+        </div>
+        """, unsafe_allow_html=True)
 
     if total_pinjaman_count > 1:
         total_sisa_hutang_semua = 0
