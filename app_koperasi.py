@@ -47,7 +47,7 @@ else:
 
 st.markdown(bg_style, unsafe_allow_html=True)
 
-# 3. Custom CSS UI
+# 3. Custom CSS UI (Diperbarui dengan gaya Kartu Kertas Kuno / Vintage Emas)
 custom_css = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -117,7 +117,7 @@ custom_css = """
         color: #ffffff !important;
     }
 
-    /* Styling tombol agar seragam persis dengan tombol Cek Data */
+    /* Styling tombol */
     .stButton button {
         border: 1px solid rgba(255, 255, 255, 0.3) !important;
         font-weight: 700 !important;
@@ -126,7 +126,6 @@ custom_css = """
         width: 100% !important;
     }
 
-    /* Styling khusus tombol Tutup / Bersihkan (Biru Gradient) */
     div.stButton > button {
         background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%) !important;
         color: #ffffff !important;
@@ -140,64 +139,106 @@ custom_css = """
         transform: translateY(-1px) !important;
     }
 
+    /* --- DESAIN KARTU HASIL (PERGAMUM VINTAGE GOLD) --- */
     .result-card {
-        background: #ffffff;
-        border-radius: 16px;
+        background: linear-gradient(135deg, #f7e8c4 0%, #ebd399 100%);
+        border: 3px double #b38738;
+        border-radius: 18px;
         padding: 24px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-        color: #1e293b;
-        margin-bottom: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(179, 135, 56, 0.25);
+        color: #3b2a1a;
+        margin-bottom: 25px;
+        position: relative;
+        overflow: hidden;
     }
 
     .result-header {
         text-align: center;
-        border-bottom: 2px dashed #e2e8f0;
-        padding-bottom: 15px;
-        margin-bottom: 15px;
+        border-bottom: 2px solid #b38738;
+        padding-bottom: 12px;
+        margin-bottom: 18px;
+        position: relative;
     }
 
     .result-header h3 {
-        color: #0f172a !important;
-        font-size: 18px;
-        font-weight: 800;
-        margin: 0 0 6px 0;
+        color: #2c1a0e !important;
+        font-size: 20px;
+        font-weight: 900;
+        margin: 0 0 4px 0;
         text-align: center;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        font-family: 'Georgia', serif;
     }
 
     @keyframes pulseMove {
         0% { transform: scale(1); opacity: 0.85; }
-        50% { transform: scale(1.12); opacity: 1; }
+        50% { transform: scale(1.08); opacity: 1; }
         100% { transform: scale(1); opacity: 0.85; }
     }
 
     .result-header p.text-update {
-        color: #1e293b !important;
-        font-size: 16px !important;
+        color: #4a3319 !important;
+        font-size: 15px !important;
         font-weight: 800 !important;
-        margin: 4px 0 0 0 !important;
+        margin: 2px 0 0 0 !important;
         text-align: center !important;
         display: inline-block !important;
         animation: pulseMove 2.2s ease-in-out infinite !important;
+        letter-spacing: 0.5px;
+    }
+
+    .divider-ornament {
+        text-align: center;
+        color: #b38738;
+        font-size: 14px;
+        margin-top: -8px;
+        margin-bottom: 12px;
     }
 
     .table-row {
         display: flex;
         justify-content: space-between;
-        padding: 10px 0;
-        border-bottom: 1px solid #f1f5f9;
+        align-items: center;
+        padding: 9px 0;
+        border-bottom: 1px dashed rgba(179, 135, 56, 0.4);
         font-size: 14px;
     }
 
-    .table-label { color: #64748b; font-weight: 600; }
-    .table-value { color: #0f172a; font-weight: 700; text-align: right; }
-    .highlight-nik {
-        background-color: #fef3c7;
-        color: #92400e;
-        padding: 2px 8px;
-        border-radius: 6px;
-        font-family: monospace;
+    .table-label {
+        color: #594026;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
-    .highlight-sisa { color: #dc2626; font-size: 16px; font-weight: 800; }
+    
+    .table-value {
+        color: #1a0f07;
+        font-weight: 800;
+        text-align: right;
+    }
+
+    .highlight-nik {
+        background-color: #fff8e7;
+        color: #92400e;
+        padding: 3px 10px;
+        border-radius: 8px;
+        border: 1px solid #d97706;
+        font-family: monospace;
+        font-size: 15px;
+        letter-spacing: 0.5px;
+    }
+
+    .highlight-sisa {
+        color: #b91c1c;
+        font-size: 17px;
+        font-weight: 900;
+        background: #fee2e2;
+        padding: 4px 10px;
+        border-radius: 8px;
+        border: 1px solid #f87171;
+    }
     </style>
 """
 st.markdown(custom_css, unsafe_allow_html=True)
@@ -299,7 +340,6 @@ st.markdown("""
 if "search_result" not in st.session_state:
     st.session_state["search_result"] = None
 
-# Fungsi Callback untuk tombol Reset / Tutup
 def reset_form_callback():
     st.session_state["search_result"] = None
     st.session_state["widget_nik_input"] = ""
@@ -315,7 +355,6 @@ if s1 is not None:
         st.write("")
         cek_clicked = st.form_submit_button("🔍 Cek Data", type="primary", use_container_width=True)
 
-    # Tombol Tutup / Bersihkan diletakkan di luar form dengan lebar persis sama tanpa gangguan kolom asimetris
     st.button("🔒 Tutup / Bersihkan", on_click=reset_form_callback, use_container_width=True)
 
     if cek_clicked:
@@ -367,7 +406,6 @@ if st.session_state.get("search_result"):
         }]
         total_pinjaman_count = 1
         
-        # Kotak peringatan tidak ada pinjaman aktif (Warna Merah)
         st.markdown("""
         <div style="
             background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
@@ -400,21 +438,21 @@ if st.session_state.get("search_result"):
                 pass
         
         st.markdown(f"""
-        <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
-                    border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; 
+        <div style="background: linear-gradient(135deg, #2a1b0e 0%, #170d06 100%); 
+                    border: 2px solid #b38738; border-radius: 16px; padding: 20px; 
                     margin-bottom: 20px; text-align: center; color: white;">
-            <div style="font-size: 13px; color: #94a3b8; font-weight: 700; letter-spacing: 1px;">RINGKASAN ANGGOTA ({total_pinjaman_count} PINJAMAN AKTIF)</div>
-            <div style="font-size: 20px; font-weight: 800; color: #60a5fa; margin-top: 4px;">{res['nama']}</div>
-            <div style="font-size: 13px; color: #cbd5e1; margin-top: 2px;">SIMPANAN POKOK: <strong>{res['simpanan_pokok']}</strong></div>
-            <hr style="border-color: #334155; margin: 12px 0;">
+            <div style="font-size: 13px; color: #d9b875; font-weight: 700; letter-spacing: 1px;">RINGKASAN ANGGOTA ({total_pinjaman_count} PINJAMAN AKTIF)</div>
+            <div style="font-size: 20px; font-weight: 800; color: #f7e8c4; margin-top: 4px;">{res['nama']}</div>
+            <div style="font-size: 13px; color: #e5cb96; margin-top: 2px;">SIMPANAN POKOK: <strong>{res['simpanan_pokok']}</strong></div>
+            <hr style="border-color: #594026; margin: 12px 0;">
             <div style="display: flex; justify-content: space-around;">
                 <div>
-                    <div style="font-size: 12px; color: #cbd5e1;">TOTAL CICILAN / BULAN</div>
+                    <div style="font-size: 12px; color: #e5cb96;">TOTAL CICILAN / BULAN</div>
                     <div style="font-size: 16px; font-weight: 800; color: #facc15;">{format_rupiah(total_cicilan_semua)}</div>
                 </div>
                 <div>
-                    <div style="font-size: 12px; color: #cbd5e1;">TOTAL SISA HUTANG</div>
-                    <div style="font-size: 18px; font-weight: 800; color: #ef4444;">{format_rupiah(total_sisa_hutang_semua)}</div>
+                    <div style="font-size: 12px; color: #e5cb96;">TOTAL SISA HUTANG</div>
+                    <div style="font-size: 18px; font-weight: 800; color: #f87171;">{format_rupiah(total_sisa_hutang_semua)}</div>
                 </div>
             </div>
         </div>
@@ -427,42 +465,43 @@ if st.session_state.get("search_result"):
         <div class="result-card">
             <div class="result-header">
                 <h3>{label_pinjaman}</h3>
+                <div class="divider-ornament">❖ ────── ✦ ────── ❖</div>
                 <p class="text-update">{TEKS_UPDATE_DATA}</p>
             </div>
             <div class="table-row">
-                <span class="table-label">NIK</span>
+                <span class="table-label">🪪 NIK</span>
                 <span class="table-value highlight-nik">{res['nik']}</span>
             </div>
             <div class="table-row">
-                <span class="table-label">NAMA</span>
-                <span class="table-value" style="color: #2563eb;">{res['nama']}</span>
+                <span class="table-label">👤 NAMA</span>
+                <span class="table-value" style="color: #1e3a8a;">{res['nama']}</span>
             </div>
             <div class="table-row">
-                <span class="table-label">SIMPANAN POKOK</span>
+                <span class="table-label">🏠 SIMPANAN POKOK</span>
                 <span class="table-value">{res['simpanan_pokok']}</span>
             </div>
             <div class="table-row">
-                <span class="table-label">HUTANG</span>
+                <span class="table-label">⚖️ HUTANG</span>
                 <span class="table-value">{pinjaman['hutang']}</span>
             </div>
             <div class="table-row">
-                <span class="table-label">CICILAN PER BULAN</span>
-                <span class="table-value" style="color: #059669;">{pinjaman['cicilan']}</span>
+                <span class="table-label">📈 CICILAN PER BULAN</span>
+                <span class="table-value" style="color: #065f46;">{pinjaman['cicilan']}</span>
             </div>
             <div class="table-row">
-                <span class="table-label">TENOR PINJAMAN</span>
+                <span class="table-label">📅 TENOR PINJAMAN</span>
                 <span class="table-value">{pinjaman['tenor']} BULAN</span>
             </div>
             <div class="table-row">
-                <span class="table-label">ANGSURAN KE</span>
+                <span class="table-label">🔢 ANGSURAN KE</span>
                 <span class="table-value">{pinjaman['angsuran_ke']}</span>
             </div>
             <div class="table-row">
-                <span class="table-label">SISA ANGSURAN</span>
+                <span class="table-label">⏳ SISA ANGSURAN</span>
                 <span class="table-value">{pinjaman['sisa_angsuran']}</span>
             </div>
-            <div class="table-row" style="border-bottom: none; padding-top: 15px;">
-                <span class="table-label" style="font-size: 16px; color: #0f172a;">SISA HUTANG</span>
+            <div class="table-row" style="border-bottom: none; padding-top: 14px; margin-top: 5px;">
+                <span class="table-label" style="font-size: 16px; color: #2c1a0e; font-weight: 800;">💰 SISA HUTANG</span>
                 <span class="table-value highlight-sisa">{pinjaman['sisa_hutang']}</span>
             </div>
         </div>
@@ -470,7 +509,6 @@ if st.session_state.get("search_result"):
         st.markdown(kartu_html, unsafe_allow_html=True)
 
 elif not st.session_state.get("search_result") and s1 is not None:
-    # Kotak informasi awal diubah menjadi warna oranye
     st.markdown("""
     <div style="
         background: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
